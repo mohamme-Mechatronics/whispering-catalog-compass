@@ -30,6 +30,8 @@ export default defineConfig({
           navigateFallback: null,
           // Includes the PDF reader worker (.mjs) and its font helpers so saved catalogs open offline.
           globPatterns: ["**/*.{js,mjs,css,woff2,png,svg,ico}", "pdfjs/**/*"],
+          // Server bundle files are not downloadable; listing them makes the offline helper fail to install.
+          globIgnores: ["server/**", "**/node_modules/**"],
           maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
           cleanupOutdatedCaches: true,
           // Build output lives under client/ but is served from the site root.
