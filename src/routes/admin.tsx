@@ -15,6 +15,7 @@ import {
 } from "@/lib/catalog.functions";
 import { catalogsQuery } from "./index";
 import { ConnectionSettings } from "@/components/ConnectionSettings";
+import { ADMIN_EMAIL, maskEmail } from "@/lib/admin-email";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -34,41 +35,99 @@ export const Route = createFileRoute("/admin")({
 const field = "w-full rounded-xl border border-input bg-background px-3 py-3 text-base outline-none focus:border-primary";
 
 function AdminPage() {
-  const [code, setCode] = useState<string | null>(null);
-  const [entry, setEntry] = useState("");
+  const [state, setState] = useState<"loading" | "out" | "in">("loading");
   const verify = useServerFn(verifyAdmin);
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("admin_code");
-    if (saved) setCode(saved);
-  }, []);
+    let alive = true;
+    const check = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) return alive && setState("out");
+      try {
+        await verify();
+        if (alive) setState("in");
+      } catch {
+        await supabase.auth.signOut();
+        if (alive) setState("out");
+      }
+    };
+    void check();
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") void check();
+    });
+    return () => { alive = false; sub.subscription.unsubscribe(); };
+  }, [verify]);
 
-  if (!code)
-    return (
-      <main className="flex min-h-screen items-center justify-center px-4">
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            try {
-              await verify({ data: { code: entry } });
-              sessionStorage.setItem("admin_code", entry);
-              setCode(entry);
-            } catch {
-              toast.error("رمز الدخول غير صحيح");
-            }
-          }}
-          className="w-full max-w-sm space-y-4 rounded-2xl border border-border bg-card p-6"
-        >
-          <h1 className="text-xl font-bold">دخول الإدارة</h1>
-          <input type="password" inputMode="numeric" value={entry} onChange={(e) => setEntry(e.target.value)} placeholder="رمز الدخول" className={field} />
-          <button className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground">دخول</button>
-        </form>
-      </main>
-    );
-  return <Dashboard code={code} />;
+  if (state === "loading")
+    return <main className="flex min-h-screen items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></main>;
+  if (state === "out") return <AdminLogin />;
+  return <Dashboard />;
 }
 
-function Dashboard({ code }: { code: string }) {
+function AdminLogin() {
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function signIn(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.auth.signInWithPassword({ email: ADMIN_EMAIL, password });
+    setBusy(false);
+    if (error) toast.error("كلمة السر غير صحيحة");
+  }
+
+  async function forgot() {
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(ADMIN_EMAIL, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setBusy(false);
+    if (error) toast.error("تعذر إرسال الرسالة، حاول بعد قليل");
+    else toast.success(`أرسلنا رابط تغيير كلمة السر إلى ${maskEmail(ADMIN_EMAIL)}`);
+  }
+
+  return (
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <form onSubmit={signIn} className="w-full max-w-sm space-y-4 rounded-2xl border border-border bg-card p-6">
+        <h1 className="text-xl font-bold">دخول الإدارة</h1>
+        <input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="كلمة السر" aria-label="كلمة السر" className={field} />
+        <button disabled={busy} className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground disabled:opacity-60">دخول</button>
+        <button type="button" disabled={busy} onClick={forgot} className="w-full text-sm text-primary">نسيت كلمة السر؟</button>
+      </form>
+    </main>
+  );
+}
+
+function ChangePassword() {
+  const [current, setCurrent] = useState("");
+  const [next, setNext] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (next.length < 6) return toast.error("كلمة السر الجديدة يجب أن تكون 6 أحرف أو أرقام على الأقل");
+    if (next !== confirmPw) return toast.error("كلمتا السر غير متطابقتين");
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password: next, current_password: current } as { password: string });
+    setBusy(false);
+    if (error) return toast.error(/current|incorrect|invalid/i.test(error.message) ? "كلمة السر الحالية غير صحيحة" : "تعذر تغيير كلمة السر");
+    setCurrent(""); setNext(""); setConfirmPw("");
+    toast.success("تم تغيير كلمة السر");
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-3 rounded-2xl border border-border bg-card p-5">
+      <h2 className="text-lg font-semibold">تغيير كلمة السر</h2>
+      <input type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} placeholder="كلمة السر الحالية" aria-label="كلمة السر الحالية" className={field} />
+      <input type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} placeholder="كلمة السر الجديدة" aria-label="كلمة السر الجديدة" className={field} />
+      <input type="password" autoComplete="new-password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} placeholder="تأكيد كلمة السر الجديدة" aria-label="تأكيد كلمة السر الجديدة" className={field} />
+      <button disabled={busy} className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground disabled:opacity-60">حفظ كلمة السر</button>
+    </form>
+  );
+}
+
+function Dashboard() {
   const qc = useQueryClient();
   const { data } = useQuery(catalogsQuery);
   const getUrls = useServerFn(createUploadUrls);
@@ -95,7 +154,7 @@ function Dashboard({ code }: { code: string }) {
       const { extractPdf } = await import("@/lib/pdf-extract");
       const { pages, cover, pageCount } = await extractPdf(file);
       setStatus("جارٍ رفع الملف...");
-      const u = await getUrls({ data: { code } });
+      const u = await getUrls();
       const store = supabase.storage.from("catalogs");
       const r1 = await store.uploadToSignedUrl(u.filePath, u.fileToken, file, { contentType: "application/pdf" });
       if (r1.error) throw r1.error;
@@ -103,7 +162,6 @@ function Dashboard({ code }: { code: string }) {
       setStatus("جارٍ الحفظ...");
       await save({
         data: {
-          code,
           title: title.trim(),
           description: desc.trim(),
           keywords: keywords.trim(),
@@ -134,10 +192,15 @@ function Dashboard({ code }: { code: string }) {
     <main className="mx-auto max-w-4xl space-y-8 px-4 pb-28 pt-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">لوحة الإدارة</h1>
-        <Link to="/" className="text-sm text-primary">عرض الموقع</Link>
+        <div className="flex items-center gap-4 text-sm">
+          <Link to="/" className="text-primary">عرض الموقع</Link>
+          <button onClick={() => supabase.auth.signOut()} className="text-muted-foreground">تسجيل الخروج</button>
+        </div>
       </div>
 
       <ConnectionSettings />
+
+      <ChangePassword />
 
       <form onSubmit={upload} className="space-y-3 rounded-2xl border border-border bg-card p-5">
         <h2 className="text-lg font-semibold">إضافة كتالوج</h2>
@@ -167,7 +230,7 @@ function Dashboard({ code }: { code: string }) {
         <form className="flex gap-2" onSubmit={async (e) => {
           e.preventDefault();
           if (!newCat.trim()) return;
-          await addCat({ data: { code, name: newCat } });
+          await addCat({ data: { name: newCat } });
           setNewCat("");
           refresh();
         }}>
@@ -178,7 +241,7 @@ function Dashboard({ code }: { code: string }) {
           {data?.categories.map((c) => (
             <span key={c.id} className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-sm">
               {c.name}
-              <button onClick={async () => { if (confirm(`حذف قسم ${c.name}؟`)) { await delCat({ data: { code, id: c.id } }); refresh(); } }} aria-label="حذف">
+              <button onClick={async () => { if (confirm(`حذف قسم ${c.name}؟`)) { await delCat({ data: { id: c.id } }); refresh(); } }} aria-label="حذف">
                 <Trash2 className="h-3.5 w-3.5 text-destructive" />
               </button>
             </span>
@@ -191,7 +254,7 @@ function Dashboard({ code }: { code: string }) {
         {data?.catalogs.map((c) => (
           <div key={c.id} className="flex items-center justify-between gap-2 border-b border-border py-2 last:border-0">
             <Link to="/catalog/$id" params={{ id: c.id }} className="truncate hover:text-primary">{c.title} <span className="text-xs text-muted-foreground">({c.language === "en" ? "EN" : "عربي"})</span></Link>
-            <button onClick={async () => { if (confirm(`حذف ${c.title}؟`)) { await del({ data: { code, id: c.id } }); refresh(); } }} aria-label="حذف">
+            <button onClick={async () => { if (confirm(`حذف ${c.title}؟`)) { await del({ data: { id: c.id } }); refresh(); } }} aria-label="حذف">
               <Trash2 className="h-4 w-4 text-destructive" />
             </button>
           </div>
