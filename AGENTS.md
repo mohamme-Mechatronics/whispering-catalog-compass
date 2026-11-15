@@ -33,3 +33,4 @@ use the editor.
 - Catalog tables are server-only (service_role); all reads/writes go through server functions in src/lib/catalog.functions.ts; admin actions require a signed-in user with the admin role in user_roles (requireAdmin in src/lib/admin-auth.ts); why: one owner account with email password reset, public sign-up disabled.
 - No Android Digital Asset Links are served; the previous company's Android app binding was removed on purpose, so add public/.well-known/assetlinks.json only for a new app the owner supplies.
 - README.md is the project handbook (purpose, brand, pages, admin, data, removed items) for anyone importing the repo; update it whenever a feature, page or rule changes; why: the owner re-imports from GitHub and expects to continue from the same point.
+- seed/data.sql mirrors all database content (sections, admin role grant, catalogs); update it whenever data changes; why: GitHub must carry everything so a re-import restores the same state.
