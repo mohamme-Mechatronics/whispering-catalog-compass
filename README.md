@@ -72,5 +72,5 @@ Built with [Lovable](https://lovable.dev). Published app: https://whispering-cat
 
 
 ## Data snapshot / نسخة البيانات
-`seed/data.sql` holds all current database content (4 product sections + admin role grant). On a fresh import, run the migrations in `drizzle/migrations`, create the admin user, then run `seed/data.sql`. Keep this file updated whenever data changes.
+`seed/data.sql` holds all current database content (4 product sections + full admin account with its encrypted password + admin role). On a fresh import, run the migrations in `drizzle/migrations`, then run `seed/data.sql` (it recreates the admin account with the same password). Keep this file updated whenever data changes.
 ملف `seed/data.sql` يحتوي كل بيانات قاعدة البيانات الحالية لاستعادتها عند الاستيراد.
