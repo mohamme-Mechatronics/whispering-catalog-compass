@@ -35,3 +35,4 @@ use the editor.
 - README.md is the project handbook (purpose, brand, pages, admin, data, removed items) for anyone importing the repo; update it whenever a feature, page or rule changes; why: the owner re-imports from GitHub and expects to continue from the same point.
 - seed/data.sql mirrors all database content (sections, admin role grant, catalogs); update it whenever data changes; why: GitHub must carry everything so a re-import restores the same state.
 - Replacing a catalog cover must upload it to a new storage path and update catalogs.cover_path; why: the service worker caches covers by path forever (CacheFirst), so overwriting the same path leaves phones showing the old image.
+- Render assistant Markdown through AssistantAnswer with react-markdown and remark-gfm, without raw HTML, and keep tables horizontally scrollable inside the message; why: structured answers must remain safe and readable on phones while streaming.
