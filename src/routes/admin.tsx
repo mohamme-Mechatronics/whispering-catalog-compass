@@ -106,12 +106,12 @@ function ChangePassword() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (next.length < 6) return toast.error("كلمة السر الجديدة يجب أن تكون 6 أحرف أو أرقام على الأقل");
-    if (next !== confirmPw) return toast.error("كلمتا السر غير متطابقتين");
+    if (next.length < 6) { toast.error("كلمة السر الجديدة يجب أن تكون 6 أحرف أو أرقام على الأقل"); return; }
+    if (next !== confirmPw) { toast.error("كلمتا السر غير متطابقتين"); return; }
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: next, current_password: current } as { password: string });
     setBusy(false);
-    if (error) return toast.error(/current|incorrect|invalid/i.test(error.message) ? "كلمة السر الحالية غير صحيحة" : "تعذر تغيير كلمة السر");
+    if (error) { toast.error(/current|incorrect|invalid/i.test(error.message) ? "كلمة السر الحالية غير صحيحة" : "تعذر تغيير كلمة السر"); return; }
     setCurrent(""); setNext(""); setConfirmPw("");
     toast.success("تم تغيير كلمة السر");
   }
