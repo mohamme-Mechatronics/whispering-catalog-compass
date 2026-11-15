@@ -242,7 +242,7 @@ export function AssistantWidget() {
         </button>
       )}
       {open && (
-        <div className="fixed inset-x-3 bottom-3 z-50 flex h-[78vh] flex-col overflow-hidden rounded-2xl border border-border bg-[#eef0f4] text-[#1f1f22] shadow-glow sm:inset-x-auto sm:left-5 sm:w-[400px]">
+        <div className="fixed inset-x-3 bottom-3 z-50 flex h-[78vh] flex-col overflow-hidden rounded-2xl border border-border bg-muted text-foreground shadow-glow sm:inset-x-auto sm:left-5 sm:w-[400px]">
           <div className="flex items-center justify-between bg-gradient-to-l from-[#1e3a5f] to-[#2b5480] px-4 py-3 text-white">
             <div className="flex items-center gap-2 font-semibold">
               <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-background p-1">
@@ -274,7 +274,7 @@ export function AssistantWidget() {
               <div key={i} className={m.role === "user" ? "flex justify-start" : "flex justify-end"}>
                 <div
                   className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm leading-relaxed ${
-                    m.role === "user" ? "bg-primary text-primary-foreground" : "bg-white text-[#1f1f22] shadow-sm"
+                    m.role === "user" ? "bg-primary text-primary-foreground" : "bg-background text-foreground shadow-sm"
                   }`}
                 >
                   {m.content}
@@ -336,7 +336,7 @@ export function AssistantWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={rec ? "جاري التسجيل... اضغط للإرسال" : "اكتب سؤالك أو اضغط المايك..."}
-              className="min-w-0 flex-1 rounded-xl border-2 border-[#c7cbd3] bg-white px-3 py-2 text-base text-[#1f1f22] outline-none placeholder:text-[#9ca3af] focus:border-emerald-500"
+              className="min-w-0 flex-1 rounded-xl border-2 border-border bg-background px-3 py-2 text-base text-foreground outline-none placeholder:text-muted-foreground focus:border-emerald-500"
             />
             <button
               disabled={busy || !input.trim()}

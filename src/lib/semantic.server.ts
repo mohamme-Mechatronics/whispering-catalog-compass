@@ -64,7 +64,7 @@ export async function understandQuestion(
     .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.content.slice(0, 600)}`)
     .join("\n");
   const prompt = `You map a customer's question to product catalogs of a solar/energy company.
-The user may write in any Arabic dialect (e.g. Yemeni), English, mixed, with typos, transliterations (فيدوس=FIDUS, داي=Deye, سوليس=Solis, بايلونتك=Pylontech), descriptions of function ("device that turns panel power into home power" = inverter), or specs ("battery that stores 10 kWh" -> batteries whose V x Ah is near 10 kWh).
+The user may write in any Arabic dialect (e.g. Yemeni), English, mixed, with typos, transliterations of brand names written in Arabic letters, descriptions of function ("device that turns panel power into home power" = inverter), or specs ("battery that stores 10 kWh" -> batteries whose V x Ah is near 10 kWh).
 Follow-ups ("its dimensions", "كم وزنها", "والأكبر؟") refer to the product discussed earlier in the conversation.
 Return catalog_ids (up to 6, most relevant first, include every plausible candidate when ambiguous; only ids from the list), a precise English and Arabic search query that resolves pronouns and names models/specs, the language of the LAST user message, and needs_clarification only if it is truly impossible to guess.
 

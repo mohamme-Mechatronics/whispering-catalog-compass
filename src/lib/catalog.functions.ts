@@ -164,16 +164,17 @@ async function prepareAssistant(data: { messages: Msg[] }) {
       s.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660)).replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0));
     const alias = (s: string) =>
       s
-        .replace(/دا[يى]|ديي|ديا[يى]/g, " Deye ")
-        .replace(/سول[يى][سز]/g, " Solis ")
-        .replace(/بايلونتك|بيلونتك|بايلون/g, " Pylontech ")
-        .replace(/سانتك|صنتك/g, " Suntech ")
-        .replace(/هايث[يى]وم|ه[يى]ث[يى]وم/g, " HiTHIUM ")
-        .replace(/ل[يى] ?باور/g, " Li Power ")
-        .replace(/ف[يى]د[وو]س/g, " FIDUS ")
         .replace(/([A-Za-z]) +(\d)/g, "$1 $2")
         .replace(/\s+/g, " ")
         .trim();
+    // Brand words = Latin words that appear in this company's own catalog titles (no hardcoded brand list).
+    const brandOf = (p: string, lines: { line: string }[]) => {
+      for (const w of p.match(/[A-Za-z][A-Za-z-]{2,}/g) ?? []) {
+        const lw = w.toLowerCase();
+        if (lines.some((c) => c.line.toLowerCase().includes(lw))) return lw;
+      }
+      return undefined;
+    };
     const last = alias(dg(userMsgs[userMsgs.length - 1]?.content ?? ""));
     const prev = alias(dg(userMsgs[userMsgs.length - 2]?.content ?? ""));
 
@@ -205,11 +206,11 @@ async function prepareAssistant(data: { messages: Msg[] }) {
 
     // 1) Understand the question (meaning, dialect, follow-ups) + embed it, alongside keyword searches.
     const embedText = [prev, last].filter(Boolean).join("\n");
-    // Fast path: a clear brand + model number (e.g. "سوليس 50", "فيدوس 16") is matched instantly
+    // Fast path: a clear brand + model number is matched instantly
     // in memory, so the slow AI-understanding and embedding steps are skipped.
     const fastIds: string[] = [];
     for (const p of parts.length > 1 ? parts : [last]) {
-      const brand = p.match(/Deye|Solis|Pylontech|Suntech|HiTHIUM|Li Power|FIDUS/i)?.[0]?.toLowerCase();
+      const brand = brandOf(p, catLines);
       const nums = p.match(/\d+(?:\.\d+)?/g) ?? [];
       if (!brand || !nums.length) continue;
       for (const c of catLines) {
@@ -236,10 +237,10 @@ async function prepareAssistant(data: { messages: Msg[] }) {
     ]);
 
     const base: Hit[] = [...semChunks, ...((a as Hit[]) ?? []), ...((b as Hit[]) ?? []), ...enRes, ...partRes.flatMap((r) => (r.data as Hit[]) ?? [])];
-    // Direct model match: brand + power number (e.g. "Solis 20" -> catalog whose keywords contain "20K").
+    // Direct model match: brand + power number -> catalog whose keywords contain e.g. "20K".
     const modelIds: string[] = [];
     for (const p of [...(parts.length > 1 ? parts : [last]), u?.search_query_en ?? ""]) {
-      const brand = p.match(/Deye|Solis|Pylontech|Suntech|HiTHIUM|Li Power|FIDUS/i)?.[0]?.toLowerCase();
+      const brand = brandOf(p, catLines);
       const nums = p.match(/\d+(?:\.\d+)?/g) ?? [];
       for (const c of catLines) {
         const hay = c.line.toLowerCase();
