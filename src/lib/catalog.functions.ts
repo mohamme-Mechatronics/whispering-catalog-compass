@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { isValidAdminCode } from "@/lib/admin-code";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const BUCKET = "catalogs";
 
@@ -13,11 +13,6 @@ async function admin() {
   }
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
-}
-
-function checkCode(code: string) {
-  // The code lives in the ADMIN_CODE server secret, never in the browser bundle.
-  if (!isValidAdminCode(code, process.env["ADMIN_CODE"])) throw new Error("رمز الدخول غير صحيح");
 }
 
 export type CatalogItem = {
@@ -325,16 +320,14 @@ ${context || "(لا توجد مقتطفات مطابقة)"}`;
 /* ---------- Admin ---------- */
 
 export const verifyAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d: { code: string }) => d)
-  .handler(async ({ data }) => {
-    checkCode(data.code);
+  .middleware([requireAdmin])
+  .handler(async () => {
     return { ok: true };
   });
 
 export const createUploadUrls = createServerFn({ method: "POST" })
-  .inputValidator((d: { code: string }) => d)
-  .handler(async ({ data }) => {
-    checkCode(data.code);
+  .middleware([requireAdmin])
+  .handler(async () => {
     const sb = await admin();
     const id = crypto.randomUUID();
     const filePath = `files/${id}.pdf`;
@@ -348,9 +341,9 @@ export const createUploadUrls = createServerFn({ method: "POST" })
   });
 
 export const saveCatalog = createServerFn({ method: "POST" })
+  .middleware([requireAdmin])
   .inputValidator(
     (d: {
-      code: string;
       title: string;
       description: string;
       keywords: string;
@@ -363,7 +356,6 @@ export const saveCatalog = createServerFn({ method: "POST" })
     }) => d,
   )
   .handler(async ({ data }) => {
-    checkCode(data.code);
     const sb = await admin();
     const { data: row, error } = await sb
       .from("catalogs")
@@ -416,9 +408,9 @@ export const saveCatalog = createServerFn({ method: "POST" })
   });
 
 export const deleteCatalog = createServerFn({ method: "POST" })
-  .inputValidator((d: { code: string; id: string }) => d)
+  .middleware([requireAdmin])
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    checkCode(data.code);
     const sb = await admin();
     const { data: row } = await sb.from("catalogs").select("file_path,cover_path").eq("id", data.id).single();
     if (row) {
@@ -429,18 +421,18 @@ export const deleteCatalog = createServerFn({ method: "POST" })
   });
 
 export const addCategory = createServerFn({ method: "POST" })
-  .inputValidator((d: { code: string; name: string }) => d)
+  .middleware([requireAdmin])
+  .inputValidator((d: { name: string }) => d)
   .handler(async ({ data }) => {
-    checkCode(data.code);
     const sb = await admin();
     await sb.from("categories").insert({ name: data.name.trim() });
     return { ok: true };
   });
 
 export const deleteCategory = createServerFn({ method: "POST" })
-  .inputValidator((d: { code: string; id: string }) => d)
+  .middleware([requireAdmin])
+  .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
-    checkCode(data.code);
     const sb = await admin();
     await sb.from("categories").delete().eq("id", data.id);
     return { ok: true };
