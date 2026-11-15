@@ -48,11 +48,12 @@ export default defineConfig({
               options: { cacheName: "rafal-pages", networkTimeoutSeconds: 4 },
             },
             {
-              // Catalog list / details server functions (GET) — usable offline.
+              // Catalog list / details server functions (GET): live data when online (new catalogs and
+              // covers show on the first open), saved copy only when offline or the network is too slow.
               urlPattern: ({ url, request }) =>
                 request.method === "GET" && url.pathname.startsWith("/_serverFn"),
-              handler: "StaleWhileRevalidate",
-              options: { cacheName: "rafal-api" },
+              handler: "NetworkFirst",
+              options: { cacheName: "rafal-api", networkTimeoutSeconds: 5 },
             },
             {
               // Catalog cover images: signed links change, so cache by path only.
