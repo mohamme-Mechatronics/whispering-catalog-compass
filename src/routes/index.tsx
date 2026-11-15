@@ -221,11 +221,6 @@ function Index() {
                   <span className={`absolute right-2 top-2 rounded-full px-2.5 py-0.5 text-xs font-bold ${c.language === "en" ? "bg-blue-600 text-white" : "bg-destructive text-destructive-foreground"}`}>
                     {c.language === "en" ? "English" : "عربي"}
                   </span>
-                  {savedIds.has(c.id) && (
-                    <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-background px-2 py-0.5 text-xs font-bold text-primary">
-                      <Check className="h-3 w-3" /> محفوظ
-                    </span>
-                  )}
                 </div>
                 <div className="p-3 pl-12">
                   <h2 className="line-clamp-2 text-base font-bold leading-snug group-hover:text-primary">{c.title}</h2>
