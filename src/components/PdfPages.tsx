@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { loadPdfBytes } from "@/lib/pdf-cache";
+import { isPdfSaved, loadPdfBytes } from "@/lib/pdf-cache";
 
 // Renders PDF pages as canvases. Page 1 first; other pages render only when scrolled near.
 // Bytes are cached on the device so reopening is instant.
@@ -10,6 +10,12 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [zoomed, setZoomed] = useState(false);
+  // The file link arrives a moment after opening; the drawing waits for it unless the phone has a copy.
+  const link = useRef<{ url: string; resolve?: (u: string) => void }>({ url });
+  useEffect(() => {
+    link.current.url = url;
+    if (url) link.current.resolve?.(url);
+  }, [url]);
 
   useEffect(() => {
     let cancelled = false;
@@ -23,10 +29,16 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
     setError(false);
     (async () => {
       try {
+        let fileUrl = link.current.url;
+        if (!fileUrl && !(await isPdfSaved(id).catch(() => false))) {
+          if (!navigator.onLine) throw new Error("offline");
+          fileUrl = link.current.url || (await new Promise<string>((res) => (link.current.resolve = res)));
+        }
+        if (cancelled) return;
         const [pdfjs, workerMod, data] = await Promise.all([
           import("pdfjs-dist"),
           import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
-          loadPdfBytes(id, url),
+          loadPdfBytes(id, fileUrl),
         ]);
         if (cancelled) return;
         pdfjs.GlobalWorkerOptions.workerSrc = workerMod.default;
@@ -84,10 +96,12 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
           await draw(i, sharp);
           if (cancelled) return;
         }
-      } catch {
-        if (!cancelled) setError(true);
-      } finally {
-        if (!cancelled) setLoading(false);
+      } catch (e) {
+        console.error("pdf render failed", e);
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
       }
     })();
     return () => {

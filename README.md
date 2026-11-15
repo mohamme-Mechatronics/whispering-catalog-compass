@@ -72,7 +72,9 @@ Built with [Lovable](https://lovable.dev). Published app: https://whispering-cat
 
 
 ## Data snapshot / نسخة البيانات
-`seed/data.sql` holds all current database content (4 product sections + full admin account with its encrypted password + admin role). On a fresh import, run the migrations in `drizzle/migrations`, then run `seed/data.sql` (it recreates the admin account with the same password). Keep this file updated whenever data changes.
+`seed/data.sql` holds all current database content (4 product sections, full admin account with its encrypted password + admin role, every catalog row and its text). The catalog PDFs and covers are copied in `seed/storage/catalogs/` with the same paths they have in the `catalogs` storage bucket. On a fresh import: run the migrations in `drizzle/migrations`, run `seed/data.sql`, upload `seed/storage/catalogs/*` to the `catalogs` bucket, then run `scripts/index_catalogs.py chunks` and `profiles` to rebuild the assistant's search vectors. Keep these updated whenever data changes.
+
+Current catalogs (البطاريات): Rafal LiFePO4 51.2V 200Ah 10kWh; Rafal LiFePO4 25.6V 314Ah 8kWh.
 ملف `seed/data.sql` يحتوي كل بيانات قاعدة البيانات الحالية لاستعادتها عند الاستيراد.
 
 ## Android app / تطبيق أندرويد
