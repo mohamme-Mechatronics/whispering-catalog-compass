@@ -1,6 +1,6 @@
 import { shareLink } from "@/components/ShareSheet";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { FileText, Search, Share2 } from "lucide-react";
@@ -79,6 +79,16 @@ function pairUp<T extends { id: string; title: string; language: string }>(list:
 
 function Index() {
   const { data } = useSuspenseQuery(catalogsQuery);
+  const qc = useQueryClient();
+  // The list opens from the saved copy; swap in the fresh one (new sections/catalogs) as soon as it arrives.
+  useEffect(() => {
+    listCatalogs()
+      .then((d) => {
+        qc.setQueryData(catalogsQuery.queryKey, d);
+        try { localStorage.setItem("rafal-catalogs-list", JSON.stringify(d)); } catch {}
+      })
+      .catch(() => {});
+  }, [qc]);
   const search = useServerFn(searchCatalogs);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string | null>(null);
