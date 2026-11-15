@@ -31,4 +31,4 @@ use the editor.
 
 - Assistant retrieval is hybrid: AI question-understanding + pgvector embeddings (catalog_chunks.embedding, catalog_profiles) + trigram search + model-number match, fused with RRF (src/lib/rank.ts); why: users ask in any dialect/language and by function or specs. Re-run `scripts/index_catalogs.py chunks|profiles` to fill missing vectors/profiles.
 - Catalog tables are server-only (service_role); all reads/writes go through server functions in src/lib/catalog.functions.ts; why: the admin area is protected by a server-checked access code, not user accounts.
-- Serve Android Digital Asset Links as static JSON at public/.well-known/assetlinks.json using the supplied signing identity; TWA verification requires a same-origin, publicly accessible file rather than a CDN pointer.
+- No Android Digital Asset Links are served; the previous company's Android app binding was removed on purpose, so add public/.well-known/assetlinks.json only for a new app the owner supplies.
