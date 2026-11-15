@@ -185,9 +185,6 @@ function Index() {
       )}
       {data.catalogs.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center justify-center gap-3 text-sm">
-          <span className="text-muted-foreground">
-            محفوظ على الهاتف: {data.catalogs.filter((c) => savedIds.has(c.id)).length} من {data.catalogs.length}
-          </span>
           {data.catalogs.some((c) => !savedIds.has(c.id)) && (
             <button
               onClick={saveAll}
