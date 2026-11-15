@@ -84,7 +84,8 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
           await draw(i, sharp);
           if (cancelled) return;
         }
-      } catch {
+      } catch (e) {
+        console.error("pdf render failed", e);
         if (!cancelled) setError(true);
       } finally {
         if (!cancelled) setLoading(false);
