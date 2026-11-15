@@ -14,6 +14,9 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    // Pre-bundle libraries that are only loaded lazily (catalog viewer), so Vite never
+    // re-optimizes mid-session and leaves the open page pointing at a stale module.
+    optimizeDeps: { include: ["react-zoom-pan-pinch", "pdfjs-dist"] },
     plugins: [
       VitePWA({
         strategies: "generateSW",
