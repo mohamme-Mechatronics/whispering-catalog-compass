@@ -3,11 +3,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { FileText, Search, Share2, Smartphone, WifiOff } from "lucide-react";
-import { toast } from "sonner";
+import { FileText, Search, Share2, WifiOff } from "lucide-react";
 import { CatalogViewer } from "@/components/CatalogViewer";
 import { getCatalog, listCatalogs, searchCatalogs } from "@/lib/catalog.functions";
-import { downloadAll, getRecent, prefetchCatalog, useSavedIds } from "@/lib/pdf-cache";
+import { getRecent, prefetchCatalog } from "@/lib/pdf-cache";
 import logo from "@/assets/rafal-logo.png.asset.json";
 
 export const catalogsQuery = queryOptions({
@@ -96,7 +95,6 @@ function Index() {
   const [openId, setOpenId] = useState<string | null>(null);
   const fetchCatalog = useServerFn(getCatalog);
   const prefetch = (id: string) => prefetchCatalog(id, fetchCatalog);
-  const savedIds = useSavedIds();
   const [offline, setOffline] = useState(false);
   useEffect(() => {
     const sync = () => setOffline(!navigator.onLine);
