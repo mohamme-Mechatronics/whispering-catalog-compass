@@ -22,17 +22,11 @@ const WORDS: [RegExp, string][] = [
   [/\bBluetooth\b/gi, "بلوتوث"],
   [/\bAC\b/g, "إيه سي"],
   [/\bDC\b/g, "دي سي"],
-  [/\bSolis\b/gi, "سولِيس"],
-  [/\bPylontech\b/gi, "بايلونتِك"],
-  [/\bFIDUS\b/gi, "فيدوس"],
-  [/\bDeye\b/gi, "داي"],
-  [/\bGrowatt\b/gi, "جرووات"],
-  [/\bHuawei\b/gi, "هواوي"],
 ];
 
 export function speakable(text: string): string {
   let t = text
-    // drop long model codes in brackets, e.g. (Solis-50K-5G-PLUS)
+    // drop long model codes in brackets, e.g. (ABC-50K-5G-PLUS)
     .replace(/[(（][^)）]*[A-Za-z][^)）]*\d[^)）]*[)）]/g, " ")
     .replace(/[(（][^)）]*\d[^)）]*[A-Za-z][^)）]*[)）]/g, " ");
   for (const [r, v] of UNITS) t = t.replace(r, v);

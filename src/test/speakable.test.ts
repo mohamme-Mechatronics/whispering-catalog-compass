@@ -10,6 +10,6 @@ describe("speakable", () => {
     expect(speakable("4 MPPT")).toBe("4 إم بي بي تي");
   });
   it("drops bracketed model codes", () => {
-    expect(speakable("انفرتر سوليس (Solis-50K-5G-PLUS) قوي")).toBe("انفرتر سوليس قوي");
+    expect(speakable("انفرتر رافال (RF-50K-5G-PLUS) قوي")).toBe("انفرتر رافال قوي");
   });
 });

@@ -210,7 +210,7 @@ function Dashboard() {
           if (f && !title) setTitle(f.name.replace(/\.pdf$/i, ""));
         }} className={field} />
         <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="اسم الكتالوج (مثال: كتالوج رافال 2026)" className={field} />
-        <input value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="كلمات بديلة (مثال: سوليز، solis، 50 كيلو)" className={field} />
+        <input value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="كلمات بديلة (مثال: انفرتر، inverter، 50 كيلو)" className={field} />
         <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="وصف مختصر (اختياري)" rows={2} className={field} />
         <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={field}>
           <option value="">بدون قسم</option>

@@ -31,7 +31,8 @@ export function followSavedAppUrl() {
   try {
     OLD_KEYS.forEach((k) => localStorage.removeItem(k));
     Object.keys(localStorage).filter((k) => k.startsWith("cat-info:")).forEach((k) => localStorage.removeItem(k));
-    if ("caches" in window) void caches.delete("catalog-pdfs-v1");
+    // Old saved copies from before the Rafal rebrand (pages, data, images) are wiped.
+    if ("caches" in window) ["catalog-pdfs-v1", "pages", "api", "covers", "assets", "cdn"].forEach((n) => void caches.delete(n));
   } catch {}
   if (!import.meta.env.PROD) return;
   const saved = localStorage.getItem(KEY);

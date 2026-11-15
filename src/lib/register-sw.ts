@@ -35,11 +35,19 @@ export function registerAppSw() {
     unregisterAppSw().catch(() => {});
     return;
   }
+  // When a newer version takes over, reload once so the old screen is replaced immediately.
+  let reloaded = false;
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!hadController || reloaded) return;
+    reloaded = true;
+    window.location.reload();
+  });
   navigator.serviceWorker
     .register(SW_URL, { scope: "/" })
     .then(() => navigator.serviceWorker.ready)
     // Save the home page right away so the app opens without internet from the next launch.
-    .then(() => caches.open("pages"))
+    .then(() => caches.open("rafal-pages"))
     .then((c) => c.add(new Request("/", { cache: "reload" })))
     .catch(() => {});
 }
