@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { loadPdfBytes } from "@/lib/pdf-cache";
+import { isPdfSaved, loadPdfBytes } from "@/lib/pdf-cache";
 
 // Renders PDF pages as canvases. Page 1 first; other pages render only when scrolled near.
 // Bytes are cached on the device so reopening is instant.
@@ -23,6 +23,12 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
     setError(false);
     (async () => {
       try {
+        // The file link arrives a moment after opening; until then only a copy saved on the phone can be shown.
+        if (!url && !(await isPdfSaved(id).catch(() => false))) {
+          if (!cancelled && !navigator.onLine) setError(true);
+          return;
+        }
+        if (cancelled) return;
         const [pdfjs, workerMod, data] = await Promise.all([
           import("pdfjs-dist"),
           import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
@@ -86,9 +92,10 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
         }
       } catch (e) {
         console.error("pdf render failed", e);
-        if (!cancelled) setError(true);
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
       }
     })();
     return () => {
@@ -97,7 +104,7 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
       doc?.destroy().catch(() => {});
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, url]);
 
   return (
     <div className="h-full overflow-y-auto overscroll-contain p-2">
