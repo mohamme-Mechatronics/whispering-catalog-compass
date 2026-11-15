@@ -10,7 +10,12 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [zoomed, setZoomed] = useState(false);
-  const shownId = useRef<string | null>(null);
+  // The file link arrives a moment after opening; the drawing waits for it unless the phone has a copy.
+  const link = useRef<{ url: string; resolve?: (u: string) => void }>({ url });
+  useEffect(() => {
+    link.current.url = url;
+    if (url) link.current.resolve?.(url);
+  }, [url]);
 
   useEffect(() => {
     let cancelled = false;
@@ -19,26 +24,21 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
 
     const box = ref.current;
     if (!box) return;
-    // Already drawn from the phone copy; the late file link changes nothing.
-    if (shownId.current === id) return;
     box.innerHTML = "";
     setLoading(true);
     setError(false);
     (async () => {
       try {
-        // The file link arrives a moment after opening; until then only a copy saved on the phone can be shown.
-        if (!url && !(await isPdfSaved(id).catch(() => false))) {
-          if (!cancelled && !navigator.onLine) {
-            setError(true);
-            setLoading(false);
-          }
-          return;
+        let fileUrl = link.current.url;
+        if (!fileUrl && !(await isPdfSaved(id).catch(() => false))) {
+          if (!navigator.onLine) throw new Error("offline");
+          fileUrl = link.current.url || (await new Promise<string>((res) => (link.current.resolve = res)));
         }
         if (cancelled) return;
         const [pdfjs, workerMod, data] = await Promise.all([
           import("pdfjs-dist"),
           import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
-          loadPdfBytes(id, url),
+          loadPdfBytes(id, fileUrl),
         ]);
         if (cancelled) return;
         pdfjs.GlobalWorkerOptions.workerSrc = workerMod.default;
@@ -88,10 +88,7 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
         for (let i = 0; i < pages.length; i++) {
           await draw(i, quick);
           if (cancelled) return;
-          if (i === 0) {
-            shownId.current = id;
-            setLoading(false);
-          }
+          if (i === 0) setLoading(false);
         }
         // 2) Sharp pass for zooming, done quietly afterwards.
         const sharp = Math.min(Math.max(width * dpr * 2.5, 1600), 2400);
@@ -113,7 +110,7 @@ export function PdfPages({ id, url, cover }: { id: string; url: string; cover?: 
       doc?.destroy().catch(() => {});
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, url]);
+  }, [id]);
 
   return (
     <div className="h-full overflow-y-auto overscroll-contain p-2">
