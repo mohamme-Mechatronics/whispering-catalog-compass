@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { isValidAdminCode } from "@/lib/admin-code";
 
 const BUCKET = "catalogs";
 
@@ -15,7 +16,8 @@ async function admin() {
 }
 
 function checkCode(code: string) {
-  if (code !== "2027") throw new Error("رمز الدخول غير صحيح");
+  // The code lives in the ADMIN_CODE server secret, never in the browser bundle.
+  if (!isValidAdminCode(code, process.env["ADMIN_CODE"])) throw new Error("رمز الدخول غير صحيح");
 }
 
 export type CatalogItem = {

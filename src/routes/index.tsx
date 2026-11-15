@@ -210,6 +210,11 @@ function Index() {
           ))}
         </div>
       )}
+      <div className="mt-16 text-center">
+        <Link to="/admin" className="text-sm text-muted-foreground transition hover:text-primary">
+          لوحة الإدارة
+        </Link>
+      </div>
       <CatalogViewer id={openId} cover={openCover} onClose={() => setOpenId(null)} />
     </main>
   );
