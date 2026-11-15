@@ -1,0 +1,14 @@
+[
+  {"capability":"code","source":"GitHub repo (TanStack Start app)","outcome":"migrate","status":"in_progress","next_action":"copy source, merge dependencies"},
+  {"capability":"schema","source":"drizzle migrations: categories, catalogs, catalog_chunks, catalog_profiles, search RPCs, pgvector","outcome":"migrate","status":"pending","next_action":"enable Cloud and apply consolidated migration"},
+  {"capability":"records","source":"old Cloud database (catalog rows, text chunks, embeddings, profiles)","outcome":"migrate","status":"pending","next_action":"request CSV export or rebuild index from bundled PDFs"},
+  {"capability":"auth_identities","source":"none - app has no user accounts (admin uses access code)","outcome":"not_applicable","status":"verified","next_action":"none"},
+  {"capability":"authorization","source":"server-side admin access code check","outcome":"migrate","status":"pending","next_action":"carried over in code"},
+  {"capability":"uploaded_file_bytes","source":"55 PDFs + covers in public/catalogs; storage bucket 'catalogs' for new uploads","outcome":"migrate","status":"pending","next_action":"copy public files, create storage bucket"},
+  {"capability":"ai_features","source":"Lovable AI gateway: chat, embeddings, speech, transcription","outcome":"migrate","status":"pending","next_action":"verify LOVABLE_API_KEY present after Cloud enable"},
+  {"capability":"public_endpoints","source":"/api/public/assistant, assistant-stream, speak, transcribe","outcome":"migrate","status":"pending","next_action":"copy routes"},
+  {"capability":"pwa_and_android_assetlinks","source":"vite-plugin-pwa, manifest, .well-known/assetlinks.json","outcome":"migrate","status":"pending","next_action":"copy"},
+  {"capability":"secrets","source":"SUPABASE_* (replaced by Cloud), LOVABLE_API_KEY (provided by Cloud)","outcome":"migrate","status":"pending","next_action":"none from user"},
+  {"capability":"cutover","source":"Android TWA / published domain","outcome":"pending","status":"pending","next_action":"publish and point app/domain to new URL"},
+  {"capability":"verification","source":"-","outcome":"migrate","status":"pending","next_action":"build, routes, assistant"}
+]
