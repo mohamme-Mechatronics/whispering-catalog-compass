@@ -69,3 +69,8 @@ bun run dev   # أو npm run dev
 
 ---
 Built with [Lovable](https://lovable.dev). Published app: https://whispering-catalog-compass.lovable.app
+
+
+## Data snapshot / نسخة البيانات
+`seed/data.sql` holds all current database content (4 product sections + admin role grant). On a fresh import, run the migrations in `drizzle/migrations`, create the admin user, then run `seed/data.sql`. Keep this file updated whenever data changes.
+ملف `seed/data.sql` يحتوي كل بيانات قاعدة البيانات الحالية لاستعادتها عند الاستيراد.
