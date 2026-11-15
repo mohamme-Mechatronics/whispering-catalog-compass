@@ -5,19 +5,19 @@ import { getCatalog } from "@/lib/catalog.functions";
 type Cat = Awaited<ReturnType<typeof getCatalog>>;
 const infoMemo = new Map<string, Promise<Cat>>();
 const bytesMemo = new Map<string, Promise<ArrayBuffer>>();
-const CACHE = "catalog-pdfs-v1";
+const CACHE = "rafal-catalog-pdfs-v1";
 
 export function loadCatalogInfo(id: string, fetcher: (a: { data: { id: string } }) => Promise<Cat>) {
   let p = infoMemo.get(id);
   if (!p) {
     p = fetcher({ data: { id } })
       .then((c) => {
-        try { if (c) localStorage.setItem(`cat-info:${id}`, JSON.stringify(c)); } catch {}
+        try { if (c) localStorage.setItem(`rafal-cat-info:${id}`, JSON.stringify(c)); } catch {}
         return c;
       })
       .catch((e) => {
         infoMemo.delete(id);
-        const saved = localStorage.getItem(`cat-info:${id}`);
+        const saved = localStorage.getItem(`rafal-cat-info:${id}`);
         if (saved) return JSON.parse(saved) as Cat;
         throw e;
       });
@@ -34,13 +34,6 @@ export function loadPdfBytes(id: string, url: string): Promise<ArrayBuffer> {
       const cache = "caches" in window ? await caches.open(CACHE).catch(() => null) : null;
       const hit = await cache?.match(key);
       if (hit) return hit.arrayBuffer();
-      // Catalogs bundled inside the app itself.
-      const local = await fetch(`/catalogs/${id}.pdf`).catch(() => null);
-      if (local?.ok && (local.headers.get("content-type") ?? "").includes("pdf")) {
-        const buf = await local.arrayBuffer();
-        cache?.put(key, new Response(buf.slice(0), { headers: { "content-type": "application/pdf" } })).catch(() => {});
-        return buf;
-      }
       if (!url) throw new Error("offline");
       const res = await fetch(url);
       if (!res.ok) throw new Error("fetch failed");
@@ -62,7 +55,7 @@ export function prefetchCatalog(id: string, fetcher: (a: { data: { id: string } 
     .catch(() => {});
 }
 
-const RECENT = "recent-catalogs";
+const RECENT = "rafal-recent-catalogs";
 export function getRecent(): string[] {
   try {
     return JSON.parse(localStorage.getItem(RECENT) || "[]");

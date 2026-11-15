@@ -1,6 +1,8 @@
 // The installed app opens whatever address the admin approved on this device.
 export const DEFAULT_APP_URL = "https://whispering-catalog-compass.lovable.app";
-const KEY = "app_base_url";
+const KEY = "rafal_app_url";
+// Addresses and cached lists saved by the app before the Rafal rebrand.
+const OLD_KEYS = ["app_base_url", "catalogs-list", "recent-catalogs"];
 
 export function normalizeUrl(input: string): string | null {
   try {
@@ -26,6 +28,11 @@ export function saveAppUrl(url: string) {
 
 // On launch, move to the approved address if this copy runs elsewhere (published app only).
 export function followSavedAppUrl() {
+  try {
+    OLD_KEYS.forEach((k) => localStorage.removeItem(k));
+    Object.keys(localStorage).filter((k) => k.startsWith("cat-info:")).forEach((k) => localStorage.removeItem(k));
+    if ("caches" in window) void caches.delete("catalog-pdfs-v1");
+  } catch {}
   if (!import.meta.env.PROD) return;
   const saved = localStorage.getItem(KEY);
   if (!saved) return;

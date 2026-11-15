@@ -19,7 +19,7 @@ import { ConnectionSettings } from "@/components/ConnectionSettings";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "لوحة الإدارة — مكتبة الكتالوجات" },
+      { title: "لوحة الإدارة — مكتبة كتالوجات رافال" },
       { name: "description", content: "إدارة الكتالوجات والأقسام." },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "لوحة الإدارة" },
@@ -146,7 +146,7 @@ function Dashboard({ code }: { code: string }) {
           setFile(f);
           if (f && !title) setTitle(f.name.replace(/\.pdf$/i, ""));
         }} className={field} />
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="اسم الكتالوج (مثال: انفرتر سوليس 50kW)" className={field} />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="اسم الكتالوج (مثال: كتالوج رافال 2026)" className={field} />
         <input value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="كلمات بديلة (مثال: سوليز، solis، 50 كيلو)" className={field} />
         <textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="وصف مختصر (اختياري)" rows={2} className={field} />
         <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className={field}>
