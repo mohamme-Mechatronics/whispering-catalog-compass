@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794755392647,
+      "tag": "0000_catalog_library_schema",
+      "breakpoints": true
+    }
+  ]
+}
