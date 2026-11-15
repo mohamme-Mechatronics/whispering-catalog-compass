@@ -42,12 +42,12 @@ function ResetPassword() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw.length < 6) return toast.error("كلمة السر يجب أن تكون 6 أحرف أو أرقام على الأقل");
-    if (pw !== pw2) return toast.error("كلمتا السر غير متطابقتين");
+    if (pw.length < 6) { toast.error("كلمة السر يجب أن تكون 6 أحرف أو أرقام على الأقل"); return; }
+    if (pw !== pw2) { toast.error("كلمتا السر غير متطابقتين"); return; }
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password: pw });
     setBusy(false);
-    if (error) return toast.error("تعذر حفظ كلمة السر، اطلب رابطاً جديداً");
+    if (error) { toast.error("تعذر حفظ كلمة السر، اطلب رابطاً جديداً"); return; }
     toast.success("تم تغيير كلمة السر");
     navigate({ to: "/admin" });
   }
