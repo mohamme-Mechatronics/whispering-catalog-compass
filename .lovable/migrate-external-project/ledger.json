@@ -18,7 +18,7 @@
   "source": "old Cloud database (catalog rows, text chunks, embeddings, profiles)",
   "outcome": "migrate",
   "status": "pending",
-  "next_action": "awaiting CSV export of categories, catalogs, catalog_chunks, catalog_profiles from old project, or user approval to rebuild from bundled PDFs"
+  "next_action": "skipped by user; add later via admin page or CSV export"
  },
  {
   "capability": "auth_identities",
