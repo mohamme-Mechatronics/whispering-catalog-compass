@@ -34,28 +34,32 @@ export default defineConfig({
           globIgnores: ["server/**", "**/node_modules/**"],
           maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
           cleanupOutdatedCaches: true,
+          // New versions take over right away instead of waiting for every tab to close.
+          skipWaiting: true,
+          clientsClaim: true,
           // Build output lives under client/ but is served from the site root.
           modifyURLPrefix: { "client/": "" },
           runtimeCaching: [
             {
               urlPattern: ({ request, url }) =>
                 request.mode === "navigate" && !url.pathname.startsWith("/~oauth"),
-              handler: "StaleWhileRevalidate",
-              options: { cacheName: "pages" },
+              // Always try the live page first so an old saved copy is never shown when online.
+              handler: "NetworkFirst",
+              options: { cacheName: "rafal-pages", networkTimeoutSeconds: 4 },
             },
             {
               // Catalog list / details server functions (GET) — usable offline.
               urlPattern: ({ url, request }) =>
                 request.method === "GET" && url.pathname.startsWith("/_serverFn"),
               handler: "StaleWhileRevalidate",
-              options: { cacheName: "api" },
+              options: { cacheName: "rafal-api" },
             },
             {
               // Catalog cover images: signed links change, so cache by path only.
               urlPattern: ({ url }) => url.pathname.includes("/storage/v1/object/sign/"),
               handler: "CacheFirst",
               options: {
-                cacheName: "covers",
+                cacheName: "rafal-covers",
                 expiration: { maxEntries: 300 },
                 plugins: [
                   {
@@ -71,13 +75,13 @@ export default defineConfig({
               urlPattern: ({ url }) =>
                 url.origin === self.location.origin && url.pathname.startsWith("/assets/"),
               handler: "CacheFirst",
-              options: { cacheName: "assets" },
+              options: { cacheName: "rafal-assets" },
             },
             {
               urlPattern: ({ url }) =>
                 /fonts\.(googleapis|gstatic)\.com|cdn\.jsdelivr\.net|unpkg\.com/.test(url.host),
               handler: "CacheFirst",
-              options: { cacheName: "cdn", expiration: { maxEntries: 200 } },
+              options: { cacheName: "rafal-cdn", expiration: { maxEntries: 200 } },
             },
           ],
         },
