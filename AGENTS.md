@@ -34,3 +34,4 @@ use the editor.
 - public/.well-known/assetlinks.json binds only the Rafal Android app (package app.lovable.whispering_catalog_compass.twa); the previous company's binding was removed on purpose; why: lets the APK open full-screen without the browser bar.
 - README.md is the project handbook (purpose, brand, pages, admin, data, removed items) for anyone importing the repo; update it whenever a feature, page or rule changes; why: the owner re-imports from GitHub and expects to continue from the same point.
 - seed/data.sql mirrors all database content (sections, admin role grant, catalogs); update it whenever data changes; why: GitHub must carry everything so a re-import restores the same state.
+- Replacing a catalog cover must upload it to a new storage path and update catalogs.cover_path; why: the service worker caches covers by path forever (CacheFirst), so overwriting the same path leaves phones showing the old image.
