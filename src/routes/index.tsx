@@ -8,27 +8,27 @@ import { toast } from "sonner";
 import { CatalogViewer } from "@/components/CatalogViewer";
 import { getCatalog, listCatalogs, searchCatalogs } from "@/lib/catalog.functions";
 import { getRecent, prefetchCatalog } from "@/lib/pdf-cache";
-const logo = { url: "/actes-logo.png" };
+import logo from "@/assets/rafal-logo.png.asset.json";
 
 export const catalogsQuery = queryOptions({
   queryKey: ["catalogs"],
   queryFn: async () => {
     // Open instantly from the saved list; refresh it quietly for next time.
     if (typeof window !== "undefined") {
-      const cached = localStorage.getItem("catalogs-list");
+      const cached = localStorage.getItem("rafal-catalogs-list");
       if (cached) {
-        listCatalogs().then((d) => { try { localStorage.setItem("catalogs-list", JSON.stringify(d)); } catch {} }).catch(() => {});
+        listCatalogs().then((d) => { try { localStorage.setItem("rafal-catalogs-list", JSON.stringify(d)); } catch {} }).catch(() => {});
         return JSON.parse(cached) as Awaited<ReturnType<typeof listCatalogs>>;
       }
     }
     try {
       const d = await listCatalogs();
       if (typeof window !== "undefined") {
-        try { localStorage.setItem("catalogs-list", JSON.stringify(d)); } catch {}
+        try { localStorage.setItem("rafal-catalogs-list", JSON.stringify(d)); } catch {}
       }
       return d;
     } catch (e) {
-      const saved = typeof window !== "undefined" ? localStorage.getItem("catalogs-list") : null;
+      const saved = typeof window !== "undefined" ? localStorage.getItem("rafal-catalogs-list") : null;
       if (saved) return JSON.parse(saved) as Awaited<ReturnType<typeof listCatalogs>>;
       throw e;
     }
@@ -38,10 +38,10 @@ export const catalogsQuery = queryOptions({
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "مكتبة الكتالوجات — كل منتجاتنا في مكان واحد" },
-      { name: "description", content: "ابحث في جميع كتالوجات منتجاتنا واسأل المساعد الذكي عن أي مواصفة." },
-      { property: "og:title", content: "مكتبة الكتالوجات" },
-      { property: "og:description", content: "ابحث في جميع كتالوجات منتجاتنا واسأل المساعد الذكي." },
+      { title: "مكتبة كتالوجات رافال — كل منتجات رافال في مكان واحد" },
+      { name: "description", content: "ابحث في جميع كتالوجات منتجات رافال واسأل المساعد الذكي عن أي مواصفة." },
+      { property: "og:title", content: "مكتبة كتالوجات رافال" },
+      { property: "og:description", content: "ابحث في جميع كتالوجات منتجات رافال واسأل المساعد الذكي." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -78,14 +78,6 @@ function pairUp<T extends { id: string; title: string; language: string }>(list:
 }
 
 function Index() {
-  const BRANDS = [
-    { name: "Suntech", terms: ["suntech", "سانتك"] },
-    { name: "Li Power", terms: ["li power", "لي باور", "bz4024"] },
-    { name: "Deye", terms: ["deye", "داي"] },
-    { name: "Solis", terms: ["solis", "سوليس"] },
-    { name: "Pylontech", terms: ["pylontech", "بايلونتك", "powercube"] },
-    { name: "HiTHIUM", terms: ["hithium", "هايثيوم", "heroee"] },
-  ];
   const { data } = useSuspenseQuery(catalogsQuery);
   const search = useServerFn(searchCatalogs);
   const [q, setQ] = useState("");
@@ -102,7 +94,7 @@ function Index() {
     return () => window.removeEventListener("recent-changed", sync);
   }, []);
   useEffect(() => {
-    try { localStorage.setItem("catalogs-list", JSON.stringify(data)); } catch {}
+    try { localStorage.setItem("rafal-catalogs-list", JSON.stringify(data)); } catch {}
     // Warm up the PDF viewer engine so the first catalog opens instantly.
     const t = setTimeout(() => { import("pdfjs-dist"); import("pdfjs-dist/build/pdf.worker.min.mjs?url"); }, 800);
     return () => clearTimeout(t);
@@ -118,13 +110,7 @@ function Index() {
 
   const results = useMemo(() => {
     let list = data.catalogs;
-    const brand = BRANDS.find((b) => b.name === cat);
-    if (brand) {
-      list = list.filter((c) => {
-        const hay = `${c.title} ${c.keywords}`.toLowerCase();
-        return brand.terms.some((t) => hay.includes(t));
-      });
-    }
+    if (cat) list = list.filter((c) => c.category_id === cat);
     if (!q.trim()) return pairUp(list);
     const words = norm(q).split(/\s+/).filter(Boolean);
     const direct = list.filter((c) => {
@@ -139,9 +125,9 @@ function Index() {
   return (
     <main className="mx-auto min-h-screen max-w-6xl px-4 pb-28 pt-4">
       <header className="mb-4 text-center">
-        <img src={logo.url} alt="ACTES" className="mx-auto mb-4 h-14 w-auto object-contain sm:h-16" />
+        <img src={logo.url} alt="RAFAL" className="mx-auto mb-4 h-14 w-auto object-contain sm:h-16" />
         <h1 className="text-3xl font-bold sm:text-4xl">
-          مكتبة <span className="text-[#e85d3a]">الكتالوجات</span>
+          مكتبة <span className="text-primary">الكتالوجات</span>
         </h1>
         <p className="mt-2 text-muted-foreground">ابحث عن كتالوج المنتج</p>
       </header>
@@ -158,9 +144,9 @@ function Index() {
 
       <div className="mb-8 flex gap-2 overflow-x-auto pb-2 sm:flex-wrap sm:justify-center">
         <Chip active={!cat} onClick={() => setCat(null)}>الكل</Chip>
-        {BRANDS.map((b) => (
-          <Chip key={b.name} active={cat === b.name} onClick={() => setCat(b.name)}>
-            {b.name}
+        {data.categories.map((k) => (
+          <Chip key={k.id} active={cat === k.id} onClick={() => setCat(k.id)}>
+            {k.name}
           </Chip>
         ))}
       </div>
@@ -180,7 +166,7 @@ function Index() {
               <button type="button" onPointerEnter={() => prefetch(c.id)} onPointerDown={() => prefetch(c.id)} onClick={() => setOpenId(c.id)} className="block w-full text-right">
                 <div className="relative aspect-[3/4] bg-muted">
                   {c.cover_url ? (
-                    <img src={`/catalogs/${c.id}.jpg`} onError={(e) => { if (c.cover_url) e.currentTarget.src = c.cover_url; }} alt={c.title} loading="lazy" className="h-full w-full object-cover" />
+                    <img src={c.cover_url} alt={c.title} loading="lazy" className="h-full w-full object-cover" />
                   ) : (
                     <div className="flex h-full items-center justify-center">
                       <FileText className="h-12 w-12 text-muted-foreground" />

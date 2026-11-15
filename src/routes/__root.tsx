@@ -83,8 +83,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "مكتبة الكتالوجات" },
-      { name: "description", content: "كل كتالوجات منتجاتنا في مكان واحد مع مساعد ذكي." },
+      { title: "مكتبة كتالوجات رافال" },
+      { name: "description", content: "كل كتالوجات منتجات رافال في مكان واحد مع مساعد ذكي." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#1f1f22" },

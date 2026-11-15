@@ -12,7 +12,7 @@ export const Route = createFileRoute("/catalog/$id")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: loaderData ? `${loaderData.title} — مكتبة الكتالوجات` : "كتالوج" },
+      { title: loaderData ? `${loaderData.title} — مكتبة كتالوجات رافال` : "كتالوج" },
       { name: "description", content: loaderData?.description || "عرض وتحميل الكتالوج" },
       { property: "og:title", content: loaderData?.title ?? "كتالوج" },
       { property: "og:description", content: loaderData?.description || "عرض وتحميل الكتالوج" },

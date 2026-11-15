@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowUp, X, Loader2, Mic, Square, Volume2 } from "lucide-react";
 import { askAssistant } from "@/lib/catalog.functions";
 import { speakable } from "@/lib/speakable";
-const logo = { url: "/actes-logo.png" };
+import logo from "@/assets/rafal-mark.png.asset.json";
 
 type Msg = { role: "user" | "assistant"; content: string; sources?: { id: string; title: string }[] };
 
@@ -238,7 +238,7 @@ export function AssistantWidget() {
           aria-label="المساعد الذكي"
           className="assistant-fab fixed bottom-5 left-5 z-50 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] border-foreground bg-card p-1.5 shadow-glow ring-2 ring-foreground/50 ring-offset-2 ring-offset-background transition-transform hover:scale-105"
         >
-          <img src={logo.url} alt="ACTES" className="h-full w-full object-contain" />
+          <img src={logo.url} alt="RAFAL" className="h-full w-full object-contain" />
         </button>
       )}
       {open && (
@@ -246,7 +246,7 @@ export function AssistantWidget() {
           <div className="flex items-center justify-between bg-gradient-to-l from-[#1e3a5f] to-[#2b5480] px-4 py-3 text-white">
             <div className="flex items-center gap-2 font-semibold">
               <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#1f1f22] p-1">
-                <img src={logo.url} alt="ACTES" className="h-full w-full object-contain" />
+                <img src={logo.url} alt="RAFAL" className="h-full w-full object-contain" />
                 <span className="absolute -bottom-0.5 -left-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />
               </span>
               <div className="leading-tight">
@@ -267,7 +267,7 @@ export function AssistantWidget() {
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {msgs.length === 0 && (
               <div className="space-y-3 text-sm text-[#4b5563]">
-                <p>مرحباً! اسألني عن أي منتج أو مواصفة في كتالوجاتنا.</p>
+                <p>مرحباً بك في رافال! اسألني عن أي منتج أو مواصفة في كتالوجاتنا.</p>
               </div>
             )}
             {msgs.map((m, i) => (
