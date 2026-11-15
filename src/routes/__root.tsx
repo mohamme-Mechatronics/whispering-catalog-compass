@@ -16,6 +16,7 @@ import { AssistantWidget } from "@/components/AssistantWidget";
 import { Toaster } from "@/components/ui/sonner";
 import { ShareSheet } from "@/components/ShareSheet";
 import { registerAppSw } from "@/lib/register-sw";
+import { followSavedAppUrl } from "@/lib/app-url";
 
 function NotFoundComponent() {
   return (
@@ -124,6 +125,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
+    followSavedAppUrl();
     registerAppSw();
   }, []);
 

@@ -14,6 +14,7 @@ import {
   verifyAdmin,
 } from "@/lib/catalog.functions";
 import { catalogsQuery } from "./index";
+import { ConnectionSettings } from "@/components/ConnectionSettings";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -135,6 +136,8 @@ function Dashboard({ code }: { code: string }) {
         <h1 className="text-2xl font-bold">لوحة الإدارة</h1>
         <Link to="/" className="text-sm text-primary">عرض الموقع</Link>
       </div>
+
+      <ConnectionSettings />
 
       <form onSubmit={upload} className="space-y-3 rounded-2xl border border-border bg-card p-5">
         <h2 className="text-lg font-semibold">إضافة كتالوج</h2>
