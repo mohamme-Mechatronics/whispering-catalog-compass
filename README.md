@@ -53,7 +53,7 @@
 - النماذج عبر Lovable AI Gateway (لا مفاتيح خارجية).
 
 ## 8. ما تم إزالته عمداً / Removed on purpose
-- ربط تطبيق أندرويد القديم (`assetlinks.json`) — يُضاف فقط لتطبيق جديد يقدمه المالك.
+- ربط تطبيق أندرويد القديم للشركة السابقة (أُزيل). يوجد الآن ربط لتطبيق رافال فقط في `public/.well-known/assetlinks.json`.
 - رمز الدخول الثابت القديم — استُبدل بحساب مدير وكلمة سر.
 - أي أرقام أو روابط أو بيانات محفوظة للشركة السابقة.
 
@@ -74,3 +74,9 @@ Built with [Lovable](https://lovable.dev). Published app: https://whispering-cat
 ## Data snapshot / نسخة البيانات
 `seed/data.sql` holds all current database content (4 product sections + full admin account with its encrypted password + admin role). On a fresh import, run the migrations in `drizzle/migrations`, then run `seed/data.sql` (it recreates the admin account with the same password). Keep this file updated whenever data changes.
 ملف `seed/data.sql` يحتوي كل بيانات قاعدة البيانات الحالية لاستعادتها عند الاستيراد.
+
+## Android app / تطبيق أندرويد
+Built with PWABuilder (TWA) from the published URL. Package: `app.lovable.whispering_catalog_compass.twa`, minSdk 24. `public/.well-known/assetlinks.json` holds the signing-key fingerprint. Keep the signing keystore (delivered to the owner, not in the repo) — every future update of the APK must be signed with the same key.
+
+## Offline catalogs / الكتالوجات بدون إنترنت
+Home page: "حفظ الكل على الهاتف" button + "محفوظ" badge on each saved card + offline banner. Catalog viewer: "حفظ على الهاتف" toggle (save/remove). PDFs are stored in the device cache (src/lib/pdf-cache.ts); the app shell, PDF reader worker and its font helpers are precached by the service worker (vite.config.ts; server bundle files must stay in globIgnores or the worker fails to install). Works only in the published/installed app, not the editor preview.

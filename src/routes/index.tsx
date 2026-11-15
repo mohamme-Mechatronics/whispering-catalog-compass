@@ -3,11 +3,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { FileText, Search, Share2 } from "lucide-react";
+import { Check, FileText, Search, Share2, Smartphone, WifiOff } from "lucide-react";
 import { toast } from "sonner";
 import { CatalogViewer } from "@/components/CatalogViewer";
 import { getCatalog, listCatalogs, searchCatalogs } from "@/lib/catalog.functions";
-import { getRecent, prefetchCatalog } from "@/lib/pdf-cache";
+import { downloadAll, getRecent, prefetchCatalog, useSavedIds } from "@/lib/pdf-cache";
 import logo from "@/assets/rafal-logo.png.asset.json";
 
 export const catalogsQuery = queryOptions({
@@ -96,6 +96,23 @@ function Index() {
   const [openId, setOpenId] = useState<string | null>(null);
   const fetchCatalog = useServerFn(getCatalog);
   const prefetch = (id: string) => prefetchCatalog(id, fetchCatalog);
+  const savedIds = useSavedIds();
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  const [offline, setOffline] = useState(false);
+  useEffect(() => {
+    const sync = () => setOffline(!navigator.onLine);
+    sync();
+    window.addEventListener("online", sync);
+    window.addEventListener("offline", sync);
+    return () => { window.removeEventListener("online", sync); window.removeEventListener("offline", sync); };
+  }, []);
+  const saveAll = async () => {
+    const ids = data.catalogs.map((c) => c.id);
+    setProgress({ done: 0, total: ids.length });
+    await downloadAll(ids, fetchCatalog, (done, total) => setProgress({ done, total }));
+    setProgress(null);
+    toast.success("حُفظت الكتالوجات على الهاتف — تفتح بدون إنترنت");
+  };
   const [recentIds, setRecentIds] = useState<string[]>([]);
   useEffect(() => {
     const sync = () => setRecentIds(getRecent());
@@ -161,6 +178,28 @@ function Index() {
         ))}
       </div>
 
+      {offline && (
+        <div className="mb-4 flex items-center justify-center gap-2 rounded-xl bg-muted p-3 text-sm">
+          <WifiOff className="h-4 w-4" /> أنت بدون إنترنت — تفتح الكتالوجات المحفوظة على الهاتف فقط
+        </div>
+      )}
+      {data.catalogs.length > 0 && (
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-3 text-sm">
+          <span className="text-muted-foreground">
+            محفوظ على الهاتف: {data.catalogs.filter((c) => savedIds.has(c.id)).length} من {data.catalogs.length}
+          </span>
+          {data.catalogs.some((c) => !savedIds.has(c.id)) && (
+            <button
+              onClick={saveAll}
+              disabled={!!progress || offline}
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 font-semibold text-primary-foreground disabled:opacity-60"
+            >
+              <Smartphone className="h-4 w-4" />
+              {progress ? `جارٍ الحفظ ${progress.done}/${progress.total}` : "حفظ الكل على الهاتف"}
+            </button>
+          )}
+        </div>
+      )}
 
       {results.length === 0 ? (
         <div className="py-20 text-center text-muted-foreground">
@@ -185,6 +224,11 @@ function Index() {
                   <span className={`absolute right-2 top-2 rounded-full px-2.5 py-0.5 text-xs font-bold ${c.language === "en" ? "bg-blue-600 text-white" : "bg-destructive text-destructive-foreground"}`}>
                     {c.language === "en" ? "English" : "عربي"}
                   </span>
+                  {savedIds.has(c.id) && (
+                    <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-background px-2 py-0.5 text-xs font-bold text-primary">
+                      <Check className="h-3 w-3" /> محفوظ
+                    </span>
+                  )}
                 </div>
                 <div className="p-3 pl-12">
                   <h2 className="line-clamp-2 text-base font-bold leading-snug group-hover:text-primary">{c.title}</h2>

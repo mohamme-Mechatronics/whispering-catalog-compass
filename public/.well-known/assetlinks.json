@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.lovable.whispering_catalog_compass.twa",
+        "sha256_cert_fingerprints": ["25:2B:20:EA:55:C1:5D:39:F1:DA:E8:D7:03:3A:94:65:BA:25:37:74:8B:A9:04:DC:F8:5D:E2:E6:10:CD:C9:E1"]
+      }
+    }]

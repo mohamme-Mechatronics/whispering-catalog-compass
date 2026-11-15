@@ -1,17 +1,19 @@
 import { shareLink } from "@/components/ShareSheet";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Download, ExternalLink, Loader2, Share2, X } from "lucide-react";
+import { Check, Download, ExternalLink, Loader2, Share2, Smartphone, X } from "lucide-react";
 import { toast } from "sonner";
 import { getCatalog } from "@/lib/catalog.functions";
 import { PdfPages } from "@/components/PdfPages";
-import { loadCatalogInfo, pushRecent } from "@/lib/pdf-cache";
+import { loadCatalogInfo, pushRecent, removeSaved, saveCatalog, useSavedIds } from "@/lib/pdf-cache";
 
 type Cat = Awaited<ReturnType<typeof getCatalog>>;
 
 export function CatalogViewer({ id, cover, onClose }: { id: string | null; cover?: string | null; onClose: () => void }) {
   const fetchCatalog = useServerFn(getCatalog);
   const [c, setC] = useState<Cat>(null);
+  const savedIds = useSavedIds();
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -42,6 +44,24 @@ export function CatalogViewer({ id, cover, onClose }: { id: string | null; cover
     await shareLink(c?.title ?? "كتالوج", url);
   };
 
+  const saved = savedIds.has(id);
+  const toggleSave = async () => {
+    if (saved) {
+      await removeSaved(id);
+      toast("أُزيل الكتالوج من الهاتف");
+      return;
+    }
+    setSaving(true);
+    try {
+      await saveCatalog(id, fetchCatalog);
+      toast.success("حُفظ على الهاتف — يفتح بدون إنترنت");
+    } catch {
+      toast.error("تعذر الحفظ — تأكد من الاتصال بالإنترنت");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="viewer-fade fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 p-2 sm:p-6" onClick={onClose}>
       <div
@@ -58,6 +78,14 @@ export function CatalogViewer({ id, cover, onClose }: { id: string | null; cover
               <Download className="h-4 w-4" /> تحميل
             </span>
           )}
+          <button
+            onClick={toggleSave}
+            disabled={saving}
+            className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold ${saved ? "border-primary text-primary" : "border-border hover:text-primary"}`}
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : saved ? <Check className="h-4 w-4" /> : <Smartphone className="h-4 w-4" />}
+            {saved ? "محفوظ على الهاتف" : "حفظ على الهاتف"}
+          </button>
           <button onClick={share} aria-label="مشاركة" className="rounded-xl border border-border p-2 hover:text-primary">
             <Share2 className="h-4 w-4" />
           </button>
