@@ -245,7 +245,7 @@ export function AssistantWidget() {
         <div className="fixed inset-x-3 bottom-3 z-50 flex h-[78vh] flex-col overflow-hidden rounded-2xl border border-border bg-[#eef0f4] text-[#1f1f22] shadow-glow sm:inset-x-auto sm:left-5 sm:w-[400px]">
           <div className="flex items-center justify-between bg-gradient-to-l from-[#1e3a5f] to-[#2b5480] px-4 py-3 text-white">
             <div className="flex items-center gap-2 font-semibold">
-              <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[#1f1f22] p-1">
+              <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-background p-1">
                 <img src={logo.url} alt="RAFAL" className="h-full w-full object-contain" />
                 <span className="absolute -bottom-0.5 -left-0.5 h-3 w-3 rounded-full border-2 border-background bg-emerald-500" />
               </span>
