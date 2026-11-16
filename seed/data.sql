@@ -116,3 +116,50 @@ MECHANICAL: Number of cells 132pcs; Type of cell N-TOPCon Mono; Glass thickness 
 PACKAGING: Module height 33mm; 33 modules per pallet; pallet box 1326x1140x2515 mm; box gross weight 1280 kg; 594 modules per 40ft HQ container; 18 pallets per 40ft HQ container.
 Mounting holes 14x9 and 10x7, grounding hole 6, drain hole 8. Mounting hole spacing 1264 mm (width 1303 mm, length 2384 mm).')) as v(page, content)
 where not exists (select 1 from public.catalog_chunks where catalog_id='7fd8e57a-9062-4711-b150-f08b713e4da6');
+
+-- Solar panels (الألواح): SDL SKYMAX 600-630W (615W) N-TOPCon bifacial (English original, 2 pages).
+insert into public.catalogs (id, title, description, keywords, category_id, language, file_path, cover_path, page_count) values
+  ('cd4175f0-497c-4e87-b075-21ad21573187', 'لوح شمسي SDL سكاي ماكس 615 واط (ثنائي الوجه N-TOPCon)', 'لوح طاقة شمسية SDL من سلسلة SKYMAX بتقنية N-TOPCon ثنائي الوجه (يولّد من الجهتين)، 132 خلية، قدرة 615 واط ضمن فئة 600 حتى 630 واط، كفاءة 22.8% (حتى 23.32% للفئة 630)، جهد نظام 1500V، مقاس 2382×1134×30 ملم ووزن 33.5 كغ، ضمان منتج 15 سنة وضمان قدرة 30 سنة.', 'SDL SUNDARLING SKYMAX RM-600-630W-182R/132TB 615W 615 واط 600W 610W 620W 630W لوح شمسي لوح طاقة شمسية ألواح بانل N-TOPCon TOPCon Bifacial ثنائي الوجه مونو كريستال 132 خلية', 'ba96162a-43a1-4d06-a3e8-ef4c61277365', 'en', 'files/5805e0a7-4131-45b7-ac9f-005bee20b18a.pdf', 'covers/e2e436ef-a0ee-45ab-8f0d-9501e3e0b7c0.jpg', 2)
+on conflict (id) do nothing;
+insert into public.catalog_chunks (catalog_id, page, content) select 'cd4175f0-497c-4e87-b075-21ad21573187'::uuid, v.page, v.content from (values (1, 'SDL SUNDARLING SKYMAX series RM-600-630W-182R/132TB N-TOPCon Bifacial Monocrystalline Module (615W)
+Suitable for centralised PV generation.
+Warranty Upgrades.
+High eﬃciencyand strong power generation.
+Safer smart manufacturing.
+No-Destructive Cutting.
+Junction Box Laser Welding Technology.
+
+
+
+
+2382x1134x30
+
+ 32                          600 3
+
+                                          3
+
+Dimensions 2382x1134x30 mm. 132 CELL Mono TOPCon. Power output 600-630Wp. Max. system voltage 1500V DC. Max. efficiency 23.32%.
+Linear performance warranty: 15-year product warranty / 30-year linear power warranty, 0.40% annual degradation over 30 years, 87.4% at year 30.
+Higher Power Output: module power increases by 5-25% generally, lower LCOE and higher IRR, 0-5W positive tolerance. Multi Busbar Technology: power +2~3%, efficiency +0.4~0.6%. PID Resistance. Low-light performance. Durability against extreme environmental conditions: high salt mist and ammonia resistance certified by TUV NORD. EL full inspection: dual-stage 100% EL inspection.
+Certificates: IEC61215/IEC61730/IEC61701/IEC62716/WEEE, CE, MCS, INMETRO, ETL.'), (2, 'SDL SKYMAX series RM-600-630W-182R/132TB N-TOPCon Bifacial Monocrystalline Module - datasheet
+ELECTRICAL CHARACTERISTICS (STC: Irradiance 1000W/m2, module temperature 25C, AM=1.5)
+Rated Power Pmax (Wp): 600 | 605 | 610 | 615 | 620 | 625 | 630
+Open Circuit Voltage Voc (V): 48.40 | 48.70 | 49.00 | 49.30 | 49.60 | 49.80 | 50.30
+Short Circuit Current Isc (A): 15.80 | 15.83 | 15.86 | 15.89 | 15.91 | 15.93 | 15.94
+Max Power Voltage Vmpp (V): 40.30 | 40.50 | 40.80 | 41.10 | 41.40 | 41.60 | 42.00
+Max Power Current Impp (A): 14.91 | 14.94 | 14.96 | 14.98 | 14.99 | 15.00 | 15.01
+Module Efficiency (%): 22.20 | 22.40 | 22.60 | 22.80 | 23.00 | 23.10 | 23.32
+615W module: Voc 49.30V, Isc 15.89A, Vmpp 41.10V, Impp 14.98A, efficiency 22.80%.
+Maximum system voltage: 1500V DC. Fuse Rating: 30A.
+Temperature coefficient Pmax: -0.30%/C. Temperature coefficient Isc: 0.046%/C. Temperature coefficient Voc: -0.25%/C.
+Bifacial factor: Isc=80%±10%, Voc=100%±3%, Pmax=80%±10%.
+BNPI (front 1000W/m2, rear 135W/m2, cell 25C, AM=1.5) - bifacial gain values:
+Rated Power Pmax (Wp): 663.3 | 667.8 | 674.0 | 679.8 | 685.2 | 688.9 | 695.9
+Voc (V): 48.60 | 48.90 | 49.20 | 49.50 | 49.80 | 50.20 | 50.50
+Isc (A): 17.37 | 17.40 | 17.44 | 17.47 | 17.50 | 17.52 | 17.53
+Vmpp (V): 40.50 | 40.70 | 41.00 | 41.30 | 41.60 | 41.80 | 42.20
+Impp (A): 16.38 | 16.41 | 16.44 | 16.46 | 16.47 | 16.48 | 16.49
+Power tolerance: 0~+3%. Operating temperature: -40C ~ +85C.
+MECHANICAL: Number of cells 132pcs; Type of cell N-TOPCon Mono; Glass thickness 2.0mm; Junction box IP68, 1500V DC, 3 diodes; Frame anodized aluminum alloy; Module size 2382x1134x30 mm; Weight 33.5 kg; Cables 4.0mm2, MC4 compatible; Cable length +300mm/-200mm (connector included, customizable).
+PACKAGING: Module height 30mm; 37 modules per pallet; packaging box 2386x1140x1260 mm; box gross weight 1270 kg; 740 modules per 40ft HQ container; 20 pallets per 40ft HQ container.')) as v(page, content)
+where not exists (select 1 from public.catalog_chunks where catalog_id='cd4175f0-497c-4e87-b075-21ad21573187');
