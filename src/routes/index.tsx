@@ -95,7 +95,10 @@ function Index() {
     const onVisible = () => { if (document.visibilityState === "visible") refresh(); };
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("online", refresh);
+    // While the app stays open on screen, check for new catalogs/covers every minute.
+    const timer = setInterval(() => { if (document.visibilityState === "visible" && navigator.onLine) refresh(); }, 60_000);
     return () => {
+      clearInterval(timer);
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("online", refresh);
     };
