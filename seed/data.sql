@@ -216,3 +216,35 @@ select v.id::uuid, p.summary_ar, p.summary_en, p.specs, p.embedding
 from (values ('a7300000-1116-4000-8000-000000000003','7fd8e57a-9062-4711-b150-f08b713e4da6'), ('a6150000-1116-4000-8000-000000000004','cd4175f0-497c-4e87-b075-21ad21573187'), ('a5850000-1116-4000-8000-000000000005','0a46bd57-8a5f-4fff-a6ab-2f9934d91496')) as v(id, src)
 join public.catalog_profiles p on p.catalog_id = v.src::uuid
 on conflict (catalog_id) do nothing;
+
+-- Solar panels (الألواح): GCL-NT12/66GDF 695-710W bifacial dual glass N-type (English original, 2 pages, no designed cover on the owner's request).
+insert into public.catalogs (id, title, description, keywords, category_id, language, file_path, cover_path, page_count) values
+  ('cefcadc5-73f0-4581-82c9-a8922da92f02', 'لوح شمسي GCL 710 واط (ثنائي الوجه زجاج مزدوج N-Type)', 'لوح طاقة شمسية GCL موديل NT12/66GDF ثنائي الوجه بزجاج مزدوج (يولّد من الجهتين)، تقنية N-Type أحادي البلورة، 132 خلية بحجم 210 ملم، قدرة من 695 حتى 710 واط، كفاءة حتى 22.9%، جهد نظام 1500V، مقاس 2384×1303×33 ملم ووزن 38.5 كجم، ضمان منتج 12 سنة وضمان قدرة خطي 30 سنة.', 'GCL جي سي ال جي سي إل لوح ألواح شمسي طاقة شمسية 710 واط 705 700 695 NT12/66GDF GCL-NT12/66GDF ثنائي الوجه bifacial dual glass زجاج مزدوج N-type N type مونو mono 132 خلية 210mm panel solar module', 'ba96162a-43a1-4d06-a3e8-ef4c61277365', 'en', 'files/c6839b79-bcad-4e9c-98ca-bf9f0b69395e.pdf', null, 2)
+on conflict (id) do nothing;
+insert into public.catalog_chunks (catalog_id, page, content) select 'cefcadc5-73f0-4581-82c9-a8922da92f02'::uuid, v.page, v.content from (values (1, 'GCL-NT12/66GDF 695-710W Bifacial Dual Glass Monocrystalline Module (GCL System Integration Technology)
+710W Maximum Power Output. 22.9% Maximum Module Efficiency. 0~+5W Power Output Guarantee.
+GCL Delivers Reliable Performance Over Time: world-class manufacturer of crystalline silicon photovoltaic modules; fully automatic facility and world-class technology; long term reliability tests; 2x100% EL inspection ensuring defect-free modules.
+Ideal choice for large scale ground installation. Non-destructive cutting, reduces potential micro crack risk.
+N type Technology: the N-type module has better reliability and lower LID/LeTID.
+Large size 210mm silicon wafer reduces the cost of PV support bracket, combining manifolds, cable, land and so on, thus thinning the LCOE.
+Certifications: IEC61215, IEC61730; ISO9001:2015 quality; ISO14001:2015 environmental; ISO45001:2018 occupational health and safety; IEC62941:2019 PV module quality system. Additional insurance backed by Swiss RE.
+Linear Performance Warranty: 12 year product warranty, 30 year linear power warranty, 99% first year, 87.4% at year 30, 0.40% annual degradation over 30 years.'), (2, 'GCL-NT12/66GDF xxx (xxx=695~710) Bifacial Dual Glass Monocrystalline Module - datasheet
+ELECTRICAL SPECIFICATION (STC & BNPI). STC: irradiance 1000W/m2, cell temperature 25C, AM1.5. BNPI: front 1000W/m2, rear 135W/m2.
+Maximum Power Pmax (W) STC: 695 | 700 | 705 | 710 ; BNPI: 765 | 770 | 775 | 780
+Maximum Power Voltage Vmp (V) STC: 39.86 | 40.06 | 40.27 | 40.46
+Maximum Power Current Imp (A) STC: 17.44 | 17.47 | 17.51 | 17.55
+Open Circuit Voltage Voc (V) STC: 47.55 | 47.74 | 47.93 | 48.12 ; BNPI: 47.67 | 47.85 | 48.03 | 48.21
+Short Circuit Current Isc (A) STC: 18.35 | 18.38 | 18.42 | 18.46 ; BNPI: 20.27 | 20.31 | 20.35 | 20.39
+Module Efficiency (%): 22.4 | 22.5 | 22.7 | 22.9
+Measurement uncertainty +-3% Pmax; Voc tolerance +-3%; Isc tolerance +-4%.
+ELECTRICAL SPECIFICATION (NOCT: irradiance 800W/m2, ambient 20C, wind 1m/s), for 695 | 700 | 705 | 710:
+Pmax (W): 527.2 | 530.9 | 534.8 | 538.8 ; Vmp (V): 37.55 | 37.73 | 37.93 | 38.13 ; Imp (A): 14.04 | 14.07 | 14.10 | 14.13 ; Voc (V): 45.00 | 45.20 | 45.40 | 45.60 ; Isc (A): 14.80 | 14.83 | 14.86 | 14.89
+Electrical characteristics with different power bin (10% rear irradiance ratio), for 695 | 700 | 705 | 710:
+Pmax (W): 751.0 | 755.9 | 761.5 | 766.7 ; Vmp (V): 39.86 | 40.06 | 40.27 | 40.46 ; Imp (A): 18.84 | 18.87 | 18.91 | 18.95 ; Voc (V): 47.55 | 47.74 | 47.93 | 48.12 ; Isc (A): 19.82 | 19.85 | 19.89 | 19.94
+MECHANICAL DATA: Number of cells 132 (6x22); dimensions 2384x1303x33 mm (93.86x51.30x1.30 inches); weight 38.5 kg; front glass 2.0mm anti-reflection coating; back glass 2.0mm heat strengthened; frame anodized aluminium alloy; cable 4.0mm2, portrait +300/-200mm, length can be customized; fire rating IEC Class C; wind/snow load 2400Pa/5400Pa; protection class Class II; bifaciality Pmax 80%, Voc 95%, Isc 80% (+-5%).
+TEMPERATURE RATINGS: NOCT 45+-2C; temperature coefficient of Isc +0.045%/C; of Voc -0.26%/C; of Pmax -0.29%/C.
+MAXIMUM RATINGS: operational temperature -40~+85C; maximum system voltage 1500V DC; max series fuse rating 35A.
+PACKAGING: 33 modules per box; 594 modules per 40ft container.
+Connectors (optional): Suzhou Bright B01/B05x; Suzhou Xtong XT2, PV-XT101.1, PV-XT101.2; Staubli PV-KST4-EVO2A/xy, PV-KBT4-EVO2A/xy, PV-KST4-EVO2/xy_UR, PV-KBT4-EVO2/xy_UR.
+Module dimension drawing: width 1303mm, length 2384mm, drainage holes 8-3.5x8, installing holes 4-9x14 and 8-7x10, grounding holes 12-4.3, long frame 28.5mm, short frame 23mm, height 33mm.')) as v(page, content)
+where not exists (select 1 from public.catalog_chunks where catalog_id='cefcadc5-73f0-4581-82c9-a8922da92f02');
