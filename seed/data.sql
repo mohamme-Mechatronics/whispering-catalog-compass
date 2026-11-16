@@ -40,3 +40,79 @@ insert into public.catalog_chunks (catalog_id,page,content,embedding) select 'a5
 insert into public.catalog_profiles (catalog_id,summary_ar,summary_en,specs,embedding) select 'a51a2000-1116-4000-8000-000000000001'::uuid,summary_ar,summary_en,specs,embedding from public.catalog_profiles where catalog_id='c51d4f3d-0fa9-4eb2-87dc-48dd7dc15939' on conflict(catalog_id) do nothing;
 insert into public.catalog_chunks (catalog_id,page,content,embedding) select 'a2531400-1116-4000-8000-000000000002'::uuid,page,content,embedding from public.catalog_chunks where catalog_id='0cf3b555-706b-4f43-9269-cda23b58a842' and not exists (select 1 from public.catalog_chunks where catalog_id='a2531400-1116-4000-8000-000000000002');
 insert into public.catalog_profiles (catalog_id,summary_ar,summary_en,specs,embedding) select 'a2531400-1116-4000-8000-000000000002'::uuid,summary_ar,summary_en,specs,embedding from public.catalog_profiles where catalog_id='0cf3b555-706b-4f43-9269-cda23b58a842' on conflict(catalog_id) do nothing;
+
+-- Solar panels (الألواح): SDL SKYMAX 685-730W N-TOPCon bifacial (English original, 2 pages).
+insert into public.catalogs (id, title, description, keywords, category_id, language, file_path, cover_path, page_count) values
+  ('7fd8e57a-9062-4711-b150-f08b713e4da6', 'لوح شمسي SDL سكاي ماكس 730 واط (ثنائي الوجه N-TOPCon)', 'لوح طاقة شمسية SDL من سلسلة SKYMAX بتقنية N-TOPCon ثنائي الوجه (يولّد من الجهتين)، 132 خلية، قدرة من 685 حتى 730 واط، كفاءة حتى 23.5%، جهد نظام 1500V، مقاس 2384×1303×33 ملم ووزن 37.5 كغ، ضمان منتج 15 سنة وضمان قدرة 30 سنة.', 'SDL SUNDARLING SKYMAX RM-685-730W-210M/132TB 730W 730 واط 720W 700W لوح شمسي لوح طاقة شمسية ألواح بانل N-TOPCon TOPCon Bifacial ثنائي الوجه مونو كريستال 132 خلية', 'ba96162a-43a1-4d06-a3e8-ef4c61277365', 'en', 'files/418fe866-a226-4bc3-b456-d3cd9f6c948b.pdf', 'covers/68a1ff4f-465d-4a9b-b92c-00a6b4d378cc.jpg', 2)
+on conflict (id) do nothing;
+insert into public.catalog_chunks (catalog_id, page, content) select '7fd8e57a-9062-4711-b150-f08b713e4da6'::uuid, v.page, v.content from (values (1, 'SDL SUNDARLING SKYMAX series RM-685-730W-210M/132TB N-TOPCon Bifacial Monocrystalline Module
+RM-685-730W-210M/132TB
+N-TOPCon
+
+
+  Suitable for centralised PV generation.
+  Warranty Upgrades.
+  High eﬃciencyand strong power generation.
+  Safer smart manufacturing.
+  No-Destructive Cutting.
+  Junction Box Laser Welding Technology.
+
+
+
+
+ 2384×1303×33
+ Dimensions (mm)
+
+
+ 132 CELL                         685-730Wp
+ Mono TOPCon                             Power output
+
+
+ 1500V DC                                  23.18%
+ Max. system voltage                     Max. eﬃciency
+
+
+
+
+                                                                     IEC61215/IEC61730/IEC61701/IEC62716/WEEE De93315506
+
+
+
+
+         Higher Power Output
+         Module power increases by 5-25% generally, bringing                Low-light Performance
+         signiﬁcantly lower LCOE and higher IRR.                            Excellent performance in low light.
+         0-5w positive tolerance output warranty.
+
+
+         Multi Busbar Technology                                            Durability Against Extreme Environmental Conditions
+         By improving optical utilization rate, power increases by          High salt mist and ammonia resistance certiﬁed by TUV NORD.
+         2~3% and eﬃciency increases by 0.4~0.6%.
+
+                                                                            EL Full Inspection
+         PID Resistance                                                     Dual-stage 100% EL Inspection.
+         Excellent Anti-PID performance guarantee via optimized
+         mass-production process and material control.
+
+Linear performance warranty: 15-year product warranty / 30-year linear power warranty, 0.40% annual degradation over 30 years, 87.4% at year 30.'), (2, 'SDL SKYMAX series RM-685-730W-210M/132TB N-TOPCon Monocrystalline Module - datasheet
+ELECTRICAL CHARACTERISTICS (STC: Irradiance 1000W/m2, module temperature 25C, AM=1.5)
+Rated Power Pmax (Wp): 685 | 690 | 695 | 700 | 705 | 710 | 715 | 720 | 725 | 730
+Open Circuit Voltage Voc (V): 47.70 | 47.90 | 48.30 | 48.60 | 48.80 | 49.00 | 49.20 | 49.40 | 49.60 | 49.80
+Short Circuit Current Isc (A): 18.21 | 18.25 | 18.28 | 18.32 | 18.36 | 18.40 | 18.44 | 18.48 | 18.52 | 18.56
+Max Power Voltage Vmpp (V): 39.90 | 40.10 | 40.30 | 40.50 | 40.70 | 40.90 | 41.10 | 41.30 | 41.50 | 41.70
+Max Power Current Impp (A): 17.19 | 17.23 | 17.25 | 17.29 | 17.33 | 17.36 | 17.40 | 17.44 | 17.48 | 17.52
+Module Efficiency (%): 22.05 | 22.21 | 22.37 | 22.53 | 22.70 | 22.86 | 23.02 | 23.18 | 23.34 | 23.50
+Maximum system voltage: 1500V DC. Fuse Rating: 30A.
+Temperature coefficient Pmax: -0.30%/C. Temperature coefficient Isc: 0.046%/C. Temperature coefficient Voc: -0.25%/C.
+Bifacial factor: Isc=80%±10%, Voc=100%±3%, Pmax=80%±10%.
+BNPI (front 1000W/m2, rear 135W/m2, cell 25C, AM=1.5) - bifacial gain values:
+Rated Power Pmax (Wp): 758.9 | 764.7 | 769.3 | 774.8 | 780.6 | 785.7 | 791.6 | 797.1 | 802.6 | 808.6
+Voc (V): 47.90 | 48.10 | 48.50 | 48.80 | 49.00 | 49.20 | 49.40 | 49.60 | 49.80 | 50.00
+Isc (A): 20.06 | 20.11 | 20.15 | 20.19 | 20.24 | 20.28 | 20.33 | 20.37 | 20.41 | 20.46
+Vmpp (V): 40.10 | 40.30 | 40.50 | 40.70 | 40.90 | 41.10 | 41.30 | 41.50 | 41.70 | 41.90
+Impp (A): 18.93 | 18.98 | 19.00 | 19.04 | 19.09 | 19.12 | 19.17 | 19.21 | 19.25 | 19.30
+Power tolerance: 0~+3%. Operating temperature: -40C ~ +85C.
+MECHANICAL: Number of cells 132pcs; Type of cell N-TOPCon Mono; Glass thickness 2.0mm (dual glass); Junction box IP68, 1500V DC, 3 diodes; Frame anodized aluminum alloy; Module size 2384x1303x33 mm; Weight 37.5 kg; Cables 4.0mm2, MC4 compatible; Cable length +350mm/-250mm (customizable).
+PACKAGING: Module height 33mm; 33 modules per pallet; pallet box 1326x1140x2515 mm; box gross weight 1280 kg; 594 modules per 40ft HQ container; 18 pallets per 40ft HQ container.
+Mounting holes 14x9 and 10x7, grounding hole 6, drain hole 8. Mounting hole spacing 1264 mm (width 1303 mm, length 2384 mm).')) as v(page, content)
+where not exists (select 1 from public.catalog_chunks where catalog_id='7fd8e57a-9062-4711-b150-f08b713e4da6');
