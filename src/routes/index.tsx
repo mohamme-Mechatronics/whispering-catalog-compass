@@ -80,13 +80,25 @@ function Index() {
   const { data } = useSuspenseQuery(catalogsQuery);
   const qc = useQueryClient();
   // The list opens from the saved copy; swap in the fresh one (new sections/catalogs) as soon as it arrives.
+  // Also refresh when the app comes back to the screen or the internet returns, so catalogs added
+  // while the app stayed open in the background appear without closing it.
   useEffect(() => {
-    listCatalogs()
-      .then((d) => {
-        qc.setQueryData(catalogsQuery.queryKey, d);
-        try { localStorage.setItem("rafal-catalogs-list", JSON.stringify(d)); } catch {}
-      })
-      .catch(() => {});
+    const refresh = () => {
+      listCatalogs()
+        .then((d) => {
+          qc.setQueryData(catalogsQuery.queryKey, d);
+          try { localStorage.setItem("rafal-catalogs-list", JSON.stringify(d)); } catch {}
+        })
+        .catch(() => {});
+    };
+    refresh();
+    const onVisible = () => { if (document.visibilityState === "visible") refresh(); };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("online", refresh);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("online", refresh);
+    };
   }, [qc]);
   const search = useServerFn(searchCatalogs);
   const [q, setQ] = useState("");
