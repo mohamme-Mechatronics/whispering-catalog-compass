@@ -163,3 +163,56 @@ Power tolerance: 0~+3%. Operating temperature: -40C ~ +85C.
 MECHANICAL: Number of cells 132pcs; Type of cell N-TOPCon Mono; Glass thickness 2.0mm; Junction box IP68, 1500V DC, 3 diodes; Frame anodized aluminum alloy; Module size 2382x1134x30 mm; Weight 33.5 kg; Cables 4.0mm2, MC4 compatible; Cable length +300mm/-200mm (connector included, customizable).
 PACKAGING: Module height 30mm; 37 modules per pallet; packaging box 2386x1140x1260 mm; box gross weight 1270 kg; 740 modules per 40ft HQ container; 20 pallets per 40ft HQ container.')) as v(page, content)
 where not exists (select 1 from public.catalog_chunks where catalog_id='cd4175f0-497c-4e87-b075-21ad21573187');
+
+-- Solar panels (الألواح): SDL SKYMAX 560-600W (585W) N-TOPCon bifacial (English original, 2 pages).
+insert into public.catalogs (id, title, description, keywords, category_id, language, file_path, cover_path, page_count, created_at) values
+  ('0a46bd57-8a5f-4fff-a6ab-2f9934d91496', 'لوح شمسي SDL سكاي ماكس 585 واط (ثنائي الوجه N-TOPCon)', 'لوح طاقة شمسية SDL من سلسلة SKYMAX بتقنية N-TOPCon ثنائي الوجه (يولّد من الجهتين)، 144 خلية، قدرة 585 واط ضمن فئة 560 حتى 600 واط، كفاءة 22.6% (حتى 23.22% للفئة 600)، جهد نظام 1500V، مقاس 2278×1134×30 ملم ووزن 32 كغ، ضمان منتج 15 سنة وضمان قدرة 30 سنة.', 'SDL SUNDARLING SKYMAX RM-560-600W-182M/144TB 585W 585 واط 560W 570W 580W 590W 600W لوح شمسي لوح طاقة شمسية ألواح بانل N-TOPCon TOPCon Bifacial ثنائي الوجه مونو كريستال 144 خلية', 'ba96162a-43a1-4d06-a3e8-ef4c61277365', 'en', 'files/c85bad3f-5c8e-43a3-807c-221e6f5f9ad9.pdf', 'covers/f2a82ec3-fdfb-4137-af84-8da1b07d78a6.jpg', 2, '2026-11-16T17:38:00+00:00')
+on conflict (id) do nothing;
+insert into public.catalog_chunks (catalog_id, page, content) select '0a46bd57-8a5f-4fff-a6ab-2f9934d91496'::uuid, v.page, v.content from (values (1, 'SDL SUNDARLING SKYMAX series RM-560-600W-182M/144TB N-TOPCon Bifacial Monocrystalline Module (585W)
+Suitable for centralised PV generation. Warranty Upgrades. High efficiency and strong power generation. Safer smart manufacturing. No-Destructive Cutting. Junction Box Laser Welding Technology.
+Dimensions 2278x1134x30 mm. 144 CELL Mono TOPCon. Power output 560-600Wp. Max. system voltage 1500V DC. Max. efficiency 23.22%.
+Linear performance warranty: 15-year product warranty / 30-year linear power warranty, 0.40% annual degradation over 30 years, 87.4% at year 30.
+Higher Power Output: module power increases by 5-25% generally, lower LCOE and higher IRR, 0-5W positive tolerance. Multi Busbar Technology: power +2~3%, efficiency +0.4~0.6%. PID Resistance. Low-light performance. Durability against extreme environmental conditions: high salt mist and ammonia resistance certified by TUV NORD. EL full inspection: dual-stage 100% EL inspection.
+Certificates: IEC61215/IEC61730/IEC61701/IEC62716/WEEE, CE, MCS, INMETRO, ETL.'), (2, 'SDL SKYMAX series RM-560-600W-182M/144TB N-TOPCon Bifacial Monocrystalline Module - datasheet
+ELECTRICAL CHARACTERISTICS (STC: Irradiance 1000W/m2, module temperature 25C, AM=1.5)
+Rated Power Pmax (Wp): 560 | 565 | 570 | 575 | 580 | 585 | 590 | 595 | 600
+Open Circuit Voltage Voc (V): 52.45 | 52.61 | 52.77 | 52.93 | 53.09 | 53.26 | 53.41 | 53.57 | 53.73
+Short Circuit Current Isc (A): 13.47 | 13.55 | 13.62 | 13.69 | 13.76 | 13.83 | 13.89 | 13.95 | 14.01
+Max Power Voltage Vmpp (V): 44.12 | 44.26 | 44.39 | 44.61 | 44.84 | 45.06 | 45.28 | 45.50 | 45.72
+Max Power Current Impp (A): 12.71 | 12.79 | 12.85 | 12.90 | 12.95 | 13.00 | 13.06 | 13.12 | 13.18
+Module Efficiency (%): 21.67 | 21.86 | 22.06 | 22.25 | 22.44 | 22.6 | 22.8 | 23.02 | 23.22
+585W module: Voc 53.26V, Isc 13.83A, Vmpp 45.06V, Impp 13.00A, efficiency 22.6%.
+Maximum system voltage: 1500V DC. Fuse Rating: 30A.
+Temperature coefficient Pmax: -0.29%/C. Temperature coefficient Isc: 0.045%/C. Temperature coefficient Voc: -0.25%/C.
+Bifacial factor: Isc=80%±10%, Voc=100%±3%, Pmax=80%±10%.
+BNPI (front 1000W/m2, rear 135W/m2, cell 25C, AM=1.5) - bifacial gain values:
+Rated Power Pmax (Wp): 619.1 | 624.9 | 629.9 | 635.3 | 641.1 | 647.0 | 652.5 | 658.8 | 665.2
+Voc (V): 52.65 | 52.81 | 52.97 | 53.13 | 53.29 | 53.45 | 53.61 | 53.77 | 53.93
+Isc (A): 14.81 | 14.91 | 14.98 | 15.05 | 15.13 | 15.21 | 15.28 | 15.34 | 15.41
+Vmpp (V): 44.32 | 44.46 | 44.59 | 44.81 | 45.04 | 45.26 | 45.48 | 45.70 | 45.92
+Impp (A): 13.97 | 14.06 | 14.13 | 14.18 | 14.24 | 14.30 | 14.35 | 14.42 | 14.49
+Power tolerance: 0~+3%. Operating temperature: -40C ~ +85C.
+MECHANICAL: Number of cells 144pcs; Type of cell N-TOPCon Mono; Glass thickness 2.0mm; Junction box IP68, 1500V DC, 3 diodes; Frame anodized aluminum alloy; Module size 2278x1134x30 mm; Weight 32 kg; Cables 4.0mm2, MC4 compatible; Cable length +300mm/-200mm (connector included, customizable).
+PACKAGING: Module height 30mm; 37 modules per pallet; packaging box 2300x1140x1260 mm; box gross weight 1212 kg; 740 modules per 40ft HQ container; 20 pallets per 40ft HQ container.')) as v(page, content)
+where not exists (select 1 from public.catalog_chunks where catalog_id='0a46bd57-8a5f-4fff-a6ab-2f9934d91496');
+
+-- Arabic editions of the three SDL panels: original artwork, tables and values preserved; English labels replaced with Arabic.
+insert into public.catalogs (id, title, description, keywords, category_id, language, file_path, cover_path, page_count, created_at)
+select v.id::uuid, c.title, c.description, c.keywords || ' عربي النسخة العربية', c.category_id, 'ar', v.fp, c.cover_path, c.page_count, v.ts::timestamptz
+from (values
+ ('a7300000-1116-4000-8000-000000000003','7fd8e57a-9062-4711-b150-f08b713e4da6','files/sdl-730-ar-20261116.pdf','2026-11-16T17:40:00+00:00'),
+ ('a6150000-1116-4000-8000-000000000004','cd4175f0-497c-4e87-b075-21ad21573187','files/sdl-615-ar-20261116.pdf','2026-11-16T17:40:01+00:00'),
+ ('a5850000-1116-4000-8000-000000000005','0a46bd57-8a5f-4fff-a6ab-2f9934d91496','files/sdl-585-ar-20261116.pdf','2026-11-16T17:40:02+00:00')
+) as v(id, src, fp, ts) join public.catalogs c on c.id = v.src::uuid
+on conflict (id) do nothing;
+insert into public.catalog_chunks (catalog_id, page, content, embedding)
+select v.id::uuid, ch.page, ch.content, ch.embedding
+from (values ('a7300000-1116-4000-8000-000000000003','7fd8e57a-9062-4711-b150-f08b713e4da6'), ('a6150000-1116-4000-8000-000000000004','cd4175f0-497c-4e87-b075-21ad21573187'), ('a5850000-1116-4000-8000-000000000005','0a46bd57-8a5f-4fff-a6ab-2f9934d91496')) as v(id, src)
+join public.catalog_chunks ch on ch.catalog_id = v.src::uuid
+where not exists (select 1 from public.catalog_chunks x where x.catalog_id = v.id::uuid);
+-- After running scripts/index_catalogs.py profiles, copy the English profiles to the Arabic editions:
+insert into public.catalog_profiles (catalog_id, summary_ar, summary_en, specs, embedding)
+select v.id::uuid, p.summary_ar, p.summary_en, p.specs, p.embedding
+from (values ('a7300000-1116-4000-8000-000000000003','7fd8e57a-9062-4711-b150-f08b713e4da6'), ('a6150000-1116-4000-8000-000000000004','cd4175f0-497c-4e87-b075-21ad21573187'), ('a5850000-1116-4000-8000-000000000005','0a46bd57-8a5f-4fff-a6ab-2f9934d91496')) as v(id, src)
+join public.catalog_profiles p on p.catalog_id = v.src::uuid
+on conflict (catalog_id) do nothing;
